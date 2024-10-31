@@ -4,7 +4,6 @@ from flask import Blueprint, request, jsonify
 from ..decorators import token_required
 from ..service import (
     get_page_or_monitor,
-    get_accurate_monitors,
     get_price_converted,
     get_history_prices, 
     get_daily_changes as get_daily_changes_
@@ -16,15 +15,11 @@ route = Blueprint('monitors', __name__)
 @token_required
 def get_monitor_by_page_or_monitor(currency: Literal['dollar', 'euro']):
     try:
-        token   = request.headers.get('Authorization')
         page    = request.args.get('page')
         monitor = request.args.get('monitor')
         format_date = request.args.get('format_date', 'default')
 
-        if token and not page:
-            response = get_accurate_monitors(monitor, format_date)
-        else:
-            response = get_page_or_monitor(currency, page, monitor, format_date)
+        response = get_page_or_monitor(currency, page, monitor, format_date)
             
         return jsonify(response), 200
     except Exception as e:
