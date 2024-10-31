@@ -31,9 +31,11 @@ def get_all_monitors(currency: str, provider: str, format_date: Literal['timesta
     - provider: Proveedor.
     - format_date: Formato de fecha.
     """
+    if provider == 'default':
+        return get_accurate_monitors(None, format_date)
     if currency not in CURRENCIES.keys() or provider not in PROVIDERS.values():
         raise ValueError(f'No se encontró {'la moneda' if currency not in CURRENCIES else 'el proveedor'}.')
-    
+
     key = f'{provider}:{CURRENCIES.get(currency)}'
     monitors = json.loads(cache.get(key)) if cache.get(key) else None
     monitors_dict = None
@@ -91,7 +93,7 @@ def get_page_or_monitor(currency: str, page: Optional[str], monitor_code: Option
     - monitor_code: Key del monitor
     - format_date: Formato de fecha.
     """
-    page = 'criptodolar' if page is None else page
+    page = 'default' if page is None and currency == 'dollar' else 'criptodolar' if page is None else page
     result = get_all_monitors(currency, page, format_date)
     
     if monitor_code:
