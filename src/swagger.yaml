@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   title: PyDolarVenezuela API
   description: Esta es la documentación de la API de pyDolarVenezuela donde sabrás cómo utilizar cada endpoint.
-  version: 2.0.1
+  version: 2.0.3
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -266,10 +266,26 @@ components:
       type: number
       format: float
 
-    MonitorData:
+    MonitorDataChanges:
       type: object
       properties:
         price:
+          type: number
+          format: float
+        last_update:
+          type: string
+          format: date-time
+    
+    MonitorDataHistory:
+      type: object
+      properties:
+        price:
+          type: number
+          format: float
+        price_high:
+          type: number
+          format: float
+        price_low:
           type: number
           format: float
         last_update:
@@ -285,7 +301,7 @@ components:
         history:
           type: array
           items:
-            $ref: '#/components/schemas/MonitorData'
+            $ref: '#/components/schemas/MonitorDataHistory'
     
     Changes:
       type: object
@@ -296,4 +312,4 @@ components:
         changes:
           type: array
           items:
-            $ref: '#/components/schemas/MonitorData'
+            $ref: '#/components/schemas/MonitorDataChanges'

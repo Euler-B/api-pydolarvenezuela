@@ -277,6 +277,8 @@
                   "history": [
                     {
                       "price": 100.0,
+                      "price_high": 100.0,
+                      "price_low": 100.0,
                       "last_update": "2024-01-01T12:00:00Z"
                     }
                   ]
@@ -526,7 +528,7 @@
         "format": "float",
         "example": 123.45
       },
-      "MonitorData": {
+      "MonitorDataChanges": {
         "type": "object",
         "properties": {
           "price": {
@@ -543,6 +545,33 @@
           "last_update": "2024-01-01T12:00:00Z"
         }
       },
+      "MonitorDataHistory": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number",
+            "format": "float"
+          },
+          "price_high": {
+            "type": "number",
+            "format": "float"
+          },
+          "price_low": {
+            "type": "number",
+            "format": "float"
+          },
+          "last_update": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "example": {
+          "price": 100.0,
+          "price_high": 100.0,
+          "price_low": 100.0,
+          "last_update": "2024-01-01T12:00:00Z"
+        }
+      },
       "History": {
         "type": "object",
         "properties": {
@@ -553,7 +582,7 @@
           "history": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/MonitorData"
+              "$ref": "#/components/schemas/MonitorDataHistory"
             }
           }
         },
@@ -577,7 +606,7 @@
           "daily": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/MonitorData"
+              "$ref": "#/components/schemas/MonitorDataChanges"
             }
           }
         },
