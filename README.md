@@ -135,7 +135,6 @@ Si deseas conocer características interesantes de la API de por vida, considera
 | --------------- | ------ | ------ |
 | Solicitudes API | 500/hora | ∞ |
 | Historial de precios | No | Sí |
-| Obtención de fuentes directas en un solo lugar | Por separado | Sí |
 
 Envíame un mensaje privado desde Ko-fi para que pueda proporcionarte el token de acceso.
 
