@@ -43,4 +43,10 @@ class HistoryPriceSchema(BaseSchema):
     last_update = fields.String()
     
     class Meta:
+        fields = ("price", "price_high", "price_low", "last_update")
+
+class DailyChangeSchema(BaseSchema):
+    last_update = fields.String()
+    
+    class Meta:
         fields = ("price", "last_update")
