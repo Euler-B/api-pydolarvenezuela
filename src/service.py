@@ -1,7 +1,7 @@
 import json
 from typing import Union, Optional, Literal, Dict, List, Any
 from pyDolarVenezuela import getdate, currency_converter
-from .data.schemas import HistoryPriceSchema, MonitorSchema
+from .data.schemas import HistoryPriceSchema, DailyChangeSchema, MonitorSchema
 from .cron import monitors
 from .core import cache
 from .consts import PROVIDERS, CURRENCIES
@@ -131,7 +131,10 @@ def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: st
             raise KeyError('No se encontró el monitor al que quieres acceder.')
     
     data = json.loads(cache.get(key))
-    schema = HistoryPriceSchema(custom_format=format_date, many=True).dump(data)
+    if data_type == 'daily':
+        schema = DailyChangeSchema(custom_format=format_date, many=True).dump(data)
+    else:
+        schema = HistoryPriceSchema(custom_format=format_date, many=True).dump(data)
     results = {
         'datetime': getdate(),
         data_type: schema
