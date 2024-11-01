@@ -16,7 +16,7 @@ def backup() -> Dict[str, Any]:
         subprocess.run(
             ['pg_dump', '-h', SQL_HOST, '-U', SQL_USER, SQL_DB_NAME, '-f', _BACKUP_PATH]
         )
-        return {'message': 'Backup completed successfully.', 'success': True}
+        return {'message': 'Backup completed successfully.', 'success': True, 'path': _BACKUP_PATH}
     except subprocess.CalledProcessError as e:
         return {'message': 'An error occurred during backup.', 'success': False}
     except Exception as e:
