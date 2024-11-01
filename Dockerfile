@@ -10,5 +10,8 @@ ENV TZ="America/Caracas"
 RUN apk add --no-cache tzdata
 RUN ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
 
+# Install psql client
+RUN apk add --no-cache postgresql-client
+
 RUN pip install -r requirements.txt --no-cache-dir
 CMD ["python", "app.py"]
