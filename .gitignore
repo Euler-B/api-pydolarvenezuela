@@ -164,3 +164,5 @@ cython_debug/
 
 credentials.txt
 database.db
+
+tmp
