@@ -23,6 +23,8 @@ from .consts import (
     PROVIDERS,
     UPDATE_SCHEDULE
 )
+from .backup import backup
+from .storage.dropbox import DropboxStorage
 
 CheckVersion.check = False
 
@@ -78,3 +80,18 @@ def job() -> None:
                 logger.info(f'Actualizando datos de "{monitor.provider.name}".')
                 update_data(name, monitor)
                 break
+
+def upload_backup_dropbox() -> None:
+    """
+    Sube el archivo de backup a Dropbox.
+    """
+    dropbox = DropboxStorage()
+
+    try:
+        response = backup()
+        if not response['success']:
+            raise Exception(response['message'])
+        dropbox.upload(response['path'])
+        logger.info('Backup subido a Dropbox.')
+    except Exception as e:
+        logger.error(f'Error al subir el archivo de backup a Dropbox: {str(e)}')
