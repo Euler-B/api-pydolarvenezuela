@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 from sqlalchemy.orm import sessionmaker
 from ..decorators import token_required_admin
 from ..data.engine import engine
@@ -100,3 +100,14 @@ def delete_user():
         return jsonify({"error": "Falta el id del usuario."}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+@route.get('/get_backup')
+@token_required_admin
+def get_backup():
+    from ..backup import backup
+    
+    response = backup()
+    if not response['success']:
+        return jsonify({"error": response['message']}), 500
+    
+    return send_file(response['path'], as_attachment=True, mimetype='application/sql'), 200 
