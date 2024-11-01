@@ -22,6 +22,16 @@ TIMEOUT        = int(os.getenv('TIMEOUT', 15)) # in minutes
 TIME_ZONE      = os.getenv('TIMEZONE', 'America/Caracas')
 TIME_ZONE      = timezone(TIME_ZONE)
 
+DROPBOX_TOKEN  = os.getenv('DROPBOX_TOKEN')
+DROPBOX_APP_KEY    = os.getenv('DROPBOX_APP_KEY')
+DROPBOX_APP_SECRET = os.getenv('DROPBOX_APP_SECRET')
+DROPBOX_FOLDER     = os.getenv('DROPBOX_FOLDER', 'backup')
+
+if all([DROPBOX_TOKEN, DROPBOX_APP_KEY, DROPBOX_APP_SECRET]):
+    DROPBOX_JOB = True
+else:
+    DROPBOX_JOB = False
+
 PROVIDERS = {
     'Al Cambio': 'alcambio',
     'Banco Central de Venezuela': 'bcv',
