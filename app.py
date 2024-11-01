@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flasgger import Swagger
 
 from src.core import limiter
-from src.consts import TIMEOUT, GETLOGS
+from src.consts import TIMEOUT, GETLOGS, DROPBOX_JOB
 from src import cron
 from src.routes import index, monitors, admin
 from src.exceptions import (
@@ -20,7 +20,11 @@ if GETLOGS:
 
 # scheduler
 scheduler = BackgroundScheduler(daemon=True)
-scheduler.add_job(cron.job, 'cron', minute=f'*/{TIMEOUT}')
+scheduler.add_job(cron.job, 'cron', minute=f'*/{TIMEOUT}', id='job')
+
+if DROPBOX_JOB:
+    scheduler.add_job(cron.upload_backup_dropbox, 'cron', day_of_week='sat', id='backup')
+
 scheduler.start()
 
 # app
