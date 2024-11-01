@@ -7,19 +7,22 @@ from .consts import SQL_USER, SQL_HOST, SQL_DB_NAME, SQL_PASSWORD
 if os.getenv('PGPASSWORD') is None:
     os.environ['PGPASSWORD'] = SQL_PASSWORD
 
-os.makedirs(os.path.join(os.path.dirname(__file__), 'tmp'), exist_ok=True)
+backup_dir = os.path.join(os.path.dirname(__file__), 'tmp')
+os.makedirs(backup_dir, exist_ok=True)
 
 def backup() -> Dict[str, Any]:
+    if len(os.listdir(backup_dir)) > 5:
+        for file in os.listdir(backup_dir):
+            os.remove(os.path.join(backup_dir, file))
+        
     datetime_str = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    _BACKUP_PATH = os.path.join(
-        os.path.dirname(__file__), 'tmp', f'backup_{datetime_str}.sql'
-    )
+    backup_path = os.path.join(backup_dir, f'backup_{datetime_str}.sql')
 
     try:
         subprocess.run(
-            ['pg_dump', '-h', SQL_HOST, '-U', SQL_USER, SQL_DB_NAME, '-f', _BACKUP_PATH]
+            ['pg_dump', '-h', SQL_HOST, '-U', SQL_USER, SQL_DB_NAME, '-f', backup_path]
         )
-        return {'message': 'Backup completed successfully.', 'success': True, 'path': _BACKUP_PATH}
+        return {'message': 'Backup completed successfully.', 'success': True, 'path': backup_path}
     except subprocess.CalledProcessError as e:
         return {'message': 'An error occurred during backup.', 'success': False}
     except Exception as e:
