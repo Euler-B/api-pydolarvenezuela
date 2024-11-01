@@ -11,9 +11,10 @@ backup_dir = os.path.join(os.path.dirname(__file__), 'tmp')
 os.makedirs(backup_dir, exist_ok=True)
 
 def backup() -> Dict[str, Any]:
-    if len(os.listdir(backup_dir)) > 5:
+    if os.listdir(backup_dir):
         for file in os.listdir(backup_dir):
-            os.remove(os.path.join(backup_dir, file))
+            if file.startswith('backup_'):
+                os.remove(os.path.join(backup_dir, file))
         
     datetime_str = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     backup_path = os.path.join(backup_dir, f'backup_{datetime_str}.sql')
