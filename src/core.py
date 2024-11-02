@@ -8,11 +8,6 @@ from .consts import REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, REDIS_DB
 if not all([REDIS_HOST, REDIS_PORT, REDIS_PASSWORD]):
     raise ValueError('Missing REDIS_HOST, REDIS_PORT or REDIS_PASSWORD environment variables')
 
-limiter = Limiter(
-    get_remote_address,
-    storage_uri="memory://"
-)
-
 try:
     cache = Redis(
         host=REDIS_HOST,
@@ -24,6 +19,11 @@ try:
     cache.ping()
 except Exception as e:
     raise e
+
+limiter = Limiter(
+    get_remote_address,
+    storage_uri=f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+)
 
 logger    = logging.getLogger('pyDolarAPI')
 logger.setLevel(logging.DEBUG)
