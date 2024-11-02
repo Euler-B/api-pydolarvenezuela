@@ -5,6 +5,9 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from .consts import REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, REDIS_DB
 
+if not all([REDIS_HOST, REDIS_PORT, REDIS_PASSWORD]):
+    raise ValueError('Missing REDIS_HOST, REDIS_PORT or REDIS_PASSWORD environment variables')
+
 limiter = Limiter(
     get_remote_address,
     storage_uri="memory://"
