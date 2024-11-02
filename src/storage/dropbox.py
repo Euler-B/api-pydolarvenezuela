@@ -1,8 +1,9 @@
 import dropbox
 from datetime import datetime
+from ._base import Storage
 from ..consts import DROPBOX_TOKEN, DROPBOX_APP_KEY, DROPBOX_APP_SECRET, DROPBOX_FOLDER
 
-class DropboxStorage:
+class DropboxStorage(Storage):
     def __init__(self):
         self.client = dropbox.Dropbox(
             DROPBOX_TOKEN, 
