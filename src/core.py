@@ -10,13 +10,17 @@ limiter = Limiter(
     storage_uri="memory://"
 )
 
-cache = Redis(
-    host=REDIS_HOST,
-    port=REDIS_PORT,
-    password=REDIS_PASSWORD,
-    db=REDIS_DB,
-    decode_responses=True
-)
+try:
+    cache = Redis(
+        host=REDIS_HOST,
+        port=REDIS_PORT,
+        password=REDIS_PASSWORD,
+        db=REDIS_DB,
+        decode_responses=True
+    )
+    cache.ping()
+except Exception as e:
+    raise e
 
 logger    = logging.getLogger('pyDolarAPI')
 logger.setLevel(logging.DEBUG)
