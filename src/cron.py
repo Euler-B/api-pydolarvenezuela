@@ -25,6 +25,7 @@ from .consts import (
 )
 from .backup import backup
 from .storage.dropbox import DropboxStorage
+from .storage.telegram import TelegramStorage
 
 CheckVersion.check = False
 
@@ -95,3 +96,18 @@ def upload_backup_dropbox() -> None:
         logger.info('Backup subido a Dropbox.')
     except Exception as e:
         logger.error(f'Error al subir el archivo de backup a Dropbox: {str(e)}')
+
+def upload_backup_telegram() -> None:
+    """
+    Sube el archivo de backup a Telegram.
+    """
+    telegram = TelegramStorage()
+
+    try:
+        response = backup()
+        if not response['success']:
+            raise Exception(response['message'])
+        telegram.upload(response['path'])
+        logger.info('Backup subido a Telegram.')
+    except Exception as e:
+        logger.error(f'Error al subir el archivo de backup a Telegram: {str(e)}')
