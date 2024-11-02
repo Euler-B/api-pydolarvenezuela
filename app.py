@@ -48,5 +48,8 @@ app.register_blueprint(monitors.route, url_prefix='/api/v1')
 app.register_blueprint(admin.route, url_prefix='/api/admin')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8000)
+    # https://github.com/agronholm/apscheduler/issues/521
+    # The instance will not have to perform the task twice
+    # because the instance will be unique. use_reloader=False
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=8000)
     scheduler.shutdown()
