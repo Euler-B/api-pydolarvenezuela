@@ -27,10 +27,18 @@ DROPBOX_APP_KEY    = os.getenv('DROPBOX_APP_KEY')
 DROPBOX_APP_SECRET = os.getenv('DROPBOX_APP_SECRET')
 DROPBOX_FOLDER     = os.getenv('DROPBOX_FOLDER', 'backup')
 
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+
 if all([DROPBOX_TOKEN, DROPBOX_APP_KEY, DROPBOX_APP_SECRET]):
     DROPBOX_JOB = True
 else:
     DROPBOX_JOB = False
+
+if all([TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]):
+    TELEGRAM_JOB = True
+else:
+    TELEGRAM_JOB = False
 
 PROVIDERS = {
     'Al Cambio': 'alcambio',
