@@ -1,4 +1,5 @@
 import json
+import re
 from typing import Union, Optional, Literal, Dict, List, Any
 from pyDolarVenezuela import getdate, currency_converter
 from .data.schemas import HistoryPriceSchema, DailyChangeSchema, MonitorSchema
@@ -22,6 +23,10 @@ def _get_monitor(monitor_code: str, monitors_founds: Dict[str, Dict[str, Any]]) 
     if monitor_code in monitors_founds:
         return monitors_founds[monitor_code]
     return None
+
+def _validate_date(date: str): 
+    if re.match(r'\d{2}-\d{2}-\d{4}', date) is None: 
+        raise ValueError('El formato de la fecha debe ser: dd-mm-yyyy.')
 
 def get_all_monitors(currency: str, provider: str, format_date: Literal['timestamp', 'iso', 'default']) -> Union[Dict[str, Any], Dict[str, str]]:
     """
