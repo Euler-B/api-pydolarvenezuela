@@ -3,6 +3,11 @@ from flask import jsonify
 from werkzeug.http import HTTP_STATUS_CODES
 from dataclasses import dataclass
 
+exception_map = { 
+    KeyError: 404,
+    ValueError: 400,
+}
+
 @dataclass
 class HTTPException(Exception):
     code: Optional[int] = 500
