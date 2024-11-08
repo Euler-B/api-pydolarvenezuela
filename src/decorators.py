@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, jsonify
+from flask import request
 from sqlalchemy.orm import sessionmaker
 from .data.engine import engine
 from .data.services import is_user_valid
@@ -51,11 +51,15 @@ def token_required(f):
         return f(*args, **kwargs)
     return decorated
 
-def handle_exceptions(func):
-    def wrapper(*args, **kwargs):
+def handle_exceptions(f):
+    """
+    Validación de excepciones.
+    """
+    @wraps(f)
+    def decorated(*args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            return f(*args, **kwargs)
         except Exception as e:
             error = exception_map.get(type(e), 500)
             raise HTTPException(error, str(e))
-    return wrapper
+    return decorated
