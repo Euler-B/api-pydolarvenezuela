@@ -9,7 +9,10 @@ from src.consts import TIMEOUT, GETLOGS, DROPBOX_JOB, TELEGRAM_JOB
 from src import cron
 from src.routes import index, monitors, admin
 from src.exceptions import (
+    HTTPException,
+    handle_http_exception,
     forbidden,
+    method_not_allowed,
     page_not_found,
     internal_server_error,
     gateway_timeout
@@ -37,8 +40,10 @@ limiter.init_app(app)
 swagger = Swagger(app, template_file='src/swagger.yaml')
 
 # error handling
+app.register_error_handler(HTTPException, handle_http_exception)
 app.register_error_handler(403, forbidden)
 app.register_error_handler(404, page_not_found)
+app.register_error_handler(405, method_not_allowed)
 app.register_error_handler(500, internal_server_error)
 app.register_error_handler(504, gateway_timeout)
 
