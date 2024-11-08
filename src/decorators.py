@@ -24,8 +24,8 @@ def token_required_admin(f):
         token = request.headers.get('Authorization')
         
         if token != TOKEN_SECRET:
-            return jsonify({"error": "Token inválido."}), 401
-        
+            raise HTTPException(401, "Token inválido.")
+                
         return f(*args, **kwargs)
     return decorated
 
@@ -38,7 +38,7 @@ def token_required(f):
         token = request.headers.get('Authorization')
         
         if not token and request.path in ['/api/v1/dollar/history', '/api/v1/dollar/changes']:
-            return jsonify({'error': 'Requiere token para acceder'}), 401
+            raise HTTPException(401, "Requiere un token de autenticación.")
         
         if not token:
             @limiter.limit("500 per hour", key_func=_get_ip)
@@ -47,7 +47,7 @@ def token_required(f):
             return limited_func()
 
         if token and not is_user_valid(session, token):
-            return jsonify({'error': 'Token no válido.'}), 401
+            raise HTTPException(401, "Token inválido.")
         return f(*args, **kwargs)
     return decorated
 
