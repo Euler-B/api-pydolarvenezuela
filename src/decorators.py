@@ -5,6 +5,7 @@ from .data.engine import engine
 from .data.services import is_user_valid
 from .core import limiter
 from .consts import TOKEN_SECRET
+from .exceptions import HTTPException, exception_map
 
 session = sessionmaker(bind=engine)()
 
@@ -49,3 +50,12 @@ def token_required(f):
             return jsonify({'error': 'Token no válido.'}), 401
         return f(*args, **kwargs)
     return decorated
+
+def handle_exceptions(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            error = exception_map.get(type(e), 500)
+            raise HTTPException(error, str(e))
+    return wrapper
