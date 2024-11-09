@@ -14,49 +14,7 @@ from ..data.services import (
 route   = Blueprint('admin', __name__)
 session = sessionmaker(bind=engine)()
 
-@route.get('/get-users')
-@token_required_admin
-@handle_exceptions
-def get_users_route():
-    users = _get_users_(session)
-    return jsonify(users), 200
-
-@route.get('/reload-monitors')
-@token_required_admin
-@handle_exceptions
-def reload_monitors():
-    from ..cron import reload_monitors
-    
-    reload_monitors()
-    return jsonify({"message": "Monitores recargados exitosamente."}), 200
-
-@route.delete('/delete-page')
-@token_required_admin
-@handle_exceptions
-def delete_page():
-    name = request.form.get('name')
-    if not name:
-        raise ValueError('Falta el nombre de la página.')
-    
-    _delete_page_(session, name)
-    return jsonify({"message": "Página eliminada exitosamente."}), 200
-    
-@route.put('/modificate-monitor')
-@token_required_admin
-@handle_exceptions
-def modificate_monitor():
-    form = request.form.to_dict()
-    page = form.pop('page', None)
-    monitor = form.pop('monitor', None)
-
-    if not all([page, monitor]):
-        raise ValueError('Falta el nombre de la página o el monitor.')
-    
-    if not form:
-        raise ValueError('No se proporcionaron los datos a modificar.')
-
-    _modificate_monitor_(session, page, monitor, form)
-    return jsonify({"message": "Monitor modificado exitosamente."}), 200
+# Users 
 
 @route.post('/create-user')
 @token_required_admin
@@ -69,6 +27,13 @@ def create_user():
     
     token = _create_user_(session, name)
     return jsonify({"message": "Usuario creado exitosamente.", "token": token}), 200
+
+@route.get('/get-users')
+@token_required_admin
+@handle_exceptions
+def get_users_route():
+    users = _get_users_(session)
+    return jsonify(users), 200
 
 @route.put('/modificate-user')
 @token_required_admin
@@ -95,6 +60,47 @@ def delete_user():
     _delete_user_(session, id_user)
     return jsonify({"message": "Usuario eliminado exitosamente."}), 200
     
+# Monitors
+
+@route.get('/reload-monitors')
+@token_required_admin
+@handle_exceptions
+def reload_monitors():
+    from ..cron import reload_monitors
+    
+    reload_monitors()
+    return jsonify({"message": "Monitores recargados exitosamente."}), 200
+
+@route.put('/modificate-monitor')
+@token_required_admin
+@handle_exceptions
+def modificate_monitor():
+    form = request.form.to_dict()
+    page = form.pop('page', None)
+    monitor = form.pop('monitor', None)
+
+    if not all([page, monitor]):
+        raise ValueError('Falta el nombre de la página o el monitor.')
+    
+    if not form:
+        raise ValueError('No se proporcionaron los datos a modificar.')
+
+    _modificate_monitor_(session, page, monitor, form)
+    return jsonify({"message": "Monitor modificado exitosamente."}), 200
+
+@route.delete('/delete-page')
+@token_required_admin
+@handle_exceptions
+def delete_page():
+    name = request.form.get('name')
+    if not name:
+        raise ValueError('Falta el nombre de la página.')
+    
+    _delete_page_(session, name)
+    return jsonify({"message": "Página eliminada exitosamente."}), 200
+
+# Backup
+
 @route.get('/get-backup')
 @token_required_admin
 @handle_exceptions
