@@ -2,13 +2,15 @@ from flask import Blueprint, request, jsonify, send_file
 from sqlalchemy.orm import sessionmaker
 from ..decorators import token_required_admin, handle_exceptions
 from ..data.engine import engine
-from ..data.services import (
+from ..data.services.users_db import (
     create_user as _create_user_,
     modificate_user as _modificate_user_,
     delete_user as _delete_user_,
-    get_users as _get_users_,
-    delete_page as _delete_page_,
-    modificate_monitor as _modificate_monitor_
+    get_users as _get_users_
+)
+from ..data.services.monitors_db import (
+    modificate_monitor as _modificate_monitor_,
+    delete_page as _delete_page_
 )
 
 route   = Blueprint('admin', __name__)
