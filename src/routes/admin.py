@@ -14,14 +14,14 @@ from ..data.services import (
 route   = Blueprint('admin', __name__)
 session = sessionmaker(bind=engine)()
 
-@route.get('/get_users')
+@route.get('/get-users')
 @token_required_admin
 @handle_exceptions
 def get_users_route():
     users = _get_users_(session)
     return jsonify(users), 200
 
-@route.get('/reload_monitors')
+@route.get('/reload-monitors')
 @token_required_admin
 @handle_exceptions
 def reload_monitors():
@@ -30,7 +30,7 @@ def reload_monitors():
     reload_monitors()
     return jsonify({"message": "Monitores recargados exitosamente."}), 200
 
-@route.delete('/delete_page')
+@route.delete('/delete-page')
 @token_required_admin
 @handle_exceptions
 def delete_page():
@@ -41,7 +41,7 @@ def delete_page():
     _delete_page_(session, name)
     return jsonify({"message": "Página eliminada exitosamente."}), 200
     
-@route.put('/modificate_monitor')
+@route.put('/modificate-monitor')
 @token_required_admin
 @handle_exceptions
 def modificate_monitor():
@@ -58,7 +58,7 @@ def modificate_monitor():
     _modificate_monitor_(session, page, monitor, form)
     return jsonify({"message": "Monitor modificado exitosamente."}), 200
 
-@route.post('/create_user')
+@route.post('/create-user')
 @token_required_admin
 @handle_exceptions
 def create_user():
@@ -70,7 +70,7 @@ def create_user():
     token = _create_user_(session, name)
     return jsonify({"message": "Usuario creado exitosamente.", "token": token}), 200
 
-@route.put('/modificate_user')
+@route.put('/modificate-user')
 @token_required_admin
 @handle_exceptions
 def modificate_user():
@@ -83,7 +83,7 @@ def modificate_user():
     _modificate_user_(session, id_user, is_premium)
     return jsonify({"message": "Usuario modificado exitosamente."}), 200
 
-@route.delete('/delete_user')
+@route.delete('/delete-user')
 @token_required_admin
 @handle_exceptions
 def delete_user():
@@ -95,7 +95,7 @@ def delete_user():
     _delete_user_(session, id_user)
     return jsonify({"message": "Usuario eliminado exitosamente."}), 200
     
-@route.get('/get_backup')
+@route.get('/get-backup')
 @token_required_admin
 @handle_exceptions
 def get_backup():
