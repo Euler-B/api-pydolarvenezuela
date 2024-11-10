@@ -2,7 +2,7 @@ from functools import wraps
 from flask import request
 from sqlalchemy.orm import sessionmaker
 from .data.engine import engine
-from .data.services import is_user_valid
+from .data.services.users_db import is_user_valid
 from .core import limiter
 from .consts import TOKEN_SECRET
 from .exceptions import HTTPException, exception_map
