@@ -13,7 +13,7 @@ def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] = {'me
         'Authorization': token
     }
 
-    response = requests.post(url, headers=headers, json=data, verify=verify)
+    response = requests.post(url, headers=headers, json=data, verify=verify, timeout=5)
     response.raise_for_status()
 
 def create_webhook(session: Session, token_user: str, **kwargs) -> None:    
