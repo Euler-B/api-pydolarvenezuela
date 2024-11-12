@@ -2,10 +2,20 @@ import json
 import re
 from typing import Union, Optional, Literal, Dict, List, Any
 from pyDolarVenezuela import getdate, currency_converter
+from sqlalchemy.orm import sessionmaker
+from .data.engine import engine
 from .data.schemas import HistoryPriceSchema, DailyChangeSchema, MonitorSchema
+from .data.services.monitors_db import (
+    is_exist_page as _is_exist_page_,
+    is_exist_currency as _is_exist_currency_,
+    get_range_history_prices as _get_range_history_prices_, 
+    get_daily_changes as _get_daily_changes_
+)
 from .cron import monitors
 from .core import cache
 from .consts import PROVIDERS, CURRENCIES
+
+session = sessionmaker(bind=engine)()
 
 def _get_cache_key(*args) -> str:
     """
@@ -107,11 +117,11 @@ def get_page_or_monitor(currency: str, page: Optional[str], monitor_code: Option
             raise KeyError('No se encontró el monitor que estás buscando.')
     return result
 
-def fetch_monitor_data(monitor: Any, monitor_code: str, start_date: str, end_date: str, data_type: Literal['daily', 'history']) -> List[Dict[str, Any]]:
+def fetch_monitor_data(page_id: int, currency_id: int, monitor_code: str, start_date: str, end_date: str, data_type: Literal['daily', 'history']) -> List[Dict[str, Any]]:
     if data_type == 'history':
-        return monitor.get_prices_history(monitor_code, start_date, end_date)
+        return _get_range_history_prices_(session, page_id, currency_id, monitor_code, start_date, end_date)
     elif data_type == 'daily':
-        return monitor.get_daily_price_monitor(monitor_code, start_date)
+        return _get_daily_changes_(session, page_id, currency_id, monitor_code, start_date)
 
 def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: str, end_date: str, data_type: Literal['daily', 'history'], format_date: Literal['timestamp', 'iso', 'default']) -> List[Dict[str, Any]]:
     """
@@ -125,12 +135,15 @@ def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: st
             currency = CURRENCIES.get(currency, currency)  
 
             if name_page == page and monitor.currency == currency:
-                results = fetch_monitor_data(monitor, monitor_code, start_date, end_date, data_type)  
+                _, page_id = _is_exist_page_(session, monitor.provider.name)
+                _, currency_id = _is_exist_currency_(session, monitor.currency)
+
+                results = fetch_monitor_data(page_id, currency_id, monitor_code, start_date, end_date, data_type)  
                 
                 if not results:
                     raise ValueError('No se encontraron datos para el monitor solicitado.')
-
-                cache.set(key, json.dumps([r.__dict__ for r in results], default=str), ex=1800)
+                
+                cache.set(key, json.dumps(results, default=str), ex=1800)
                 break
         else:
             raise KeyError('No se encontró el monitor al que quieres acceder.')
