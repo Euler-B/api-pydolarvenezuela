@@ -157,9 +157,9 @@ def get_range_history_prices(session: Session, page_id: int, currency_id: int, m
             changes[date_key]['price_low']  = min(changes[date_key]['price_low'], price_history.price)
             changes[date_key]['price_open'] = price_history.price
     
-    return changes.values()
+    return [{**value} for value in changes.values()]
 
-def get_daily_changes(session: Session, page_id: int, currency_id: int, monitor_name: str, date: datetime) -> dict:
+def get_daily_changes(session: Session, page_id: int, currency_id: int, monitor_name: str, date: datetime) -> list:
     monitor = session.query(Monitor).filter(
         Monitor.page_id == page_id, 
         Monitor.currency_id == currency_id, 
@@ -168,7 +168,9 @@ def get_daily_changes(session: Session, page_id: int, currency_id: int, monitor_
     if not monitor:
         raise Exception("El monitor no fue encontrado.")
     
-    return session.query(MonitorPriceHistory).filter(
+    results = session.query(MonitorPriceHistory).filter(
         MonitorPriceHistory.monitor_id == monitor.id,
         func.date(MonitorPriceHistory.last_update) == date,
     ).all()
+
+    return [result.__dict__ for result in results]
