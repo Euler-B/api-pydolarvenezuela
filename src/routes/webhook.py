@@ -36,7 +36,7 @@ def set_webhook():
         raise ValueError('Monitors debe ser una lista de diccionarios')
 
     # Procesing webhook
-    #_send_webhook_(url, token_secret, certificate_ssl) # Send webhook to verify the url
+    _send_webhook_(url, token_secret, certificate_ssl) # Send webhook to verify the url
     _create_webhook_(session, token_user, 
                      url=url, 
                      token=token_secret, 
@@ -56,7 +56,7 @@ def del_webhook():
 
 @route.get('/get-webhook')
 @token_required
-# @handle_exceptions
+@handle_exceptions
 def get_webhook():
     token_user = request.headers.get('Authorization')
 
