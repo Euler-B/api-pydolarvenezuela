@@ -1,5 +1,4 @@
-from typing import Union, Any, List, Dict
-from datetime import datetime
+from typing import List
 from sqlalchemy.orm import sessionmaker
 from pyDolarVenezuela.pages import (
     AlCambio, 
