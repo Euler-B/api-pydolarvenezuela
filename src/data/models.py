@@ -8,6 +8,7 @@ from sqlalchemy import (
     ForeignKey
 )
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -58,6 +59,8 @@ class User(Base):
     is_premium      = Column(Boolean, default=False)
     created_at      = Column(DateTime, nullable=False)
 
+    webhooks = relationship("Webhook", back_populates="user")
+
 class Webhook(Base):
     __tablename__ = 'webhooks'
 
@@ -69,8 +72,13 @@ class Webhook(Base):
     status          = Column(Boolean, default=True)
     created_at      = Column(DateTime, nullable=False)
 
+    user = relationship("User", back_populates="webhooks")
+    monitors = relationship("MonitorsWebhooks", back_populates="webhook")
+
 class MonitorsWebhooks(Base):
     __tablename__ = 'monitors_webhooks'
 
     webhook_id      = Column(Integer, ForeignKey('webhooks.id'), primary_key=True)
     monitor_id      = Column(Integer, ForeignKey('monitors.id'), primary_key=True)
+
+    webhook = relationship("Webhook", back_populates="monitors")
