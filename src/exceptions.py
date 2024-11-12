@@ -3,9 +3,17 @@ from flask import jsonify
 from werkzeug.http import HTTP_STATUS_CODES
 from dataclasses import dataclass
 
+class MissingKeyError(Exception):
+    pass
+
+class WebhookExistsError(Exception): 
+    pass
+
 exception_map = { 
     KeyError: 404,
     ValueError: 400,
+    MissingKeyError: 400,
+    WebhookExistsError: 409
 }
 
 @dataclass
