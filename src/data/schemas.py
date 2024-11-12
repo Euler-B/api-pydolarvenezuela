@@ -29,6 +29,7 @@ class UserSchema(ma.Schema):
         if data.created_at:
             data.created_at = data.created_at.astimezone(TIME_ZONE)
         return data
+
     class Meta:
         fields = ("id", "name", "token", "is_premium", "created_at")
 
@@ -50,3 +51,16 @@ class DailyChangeSchema(BaseSchema):
     
     class Meta:
         fields = ("price", "last_update")
+
+class MonitorsWebhooksSchema(ma.Schema):
+
+    class Meta:
+        fields = ("monitor_id", )
+
+class WebhookSchema(ma.Schema):
+    monitors = fields.Nested(MonitorsWebhooksSchema, many=True)
+    created_at = fields.String()
+    
+    class Meta:
+        fields = ("id", "url", "token", "certificate_ssl", "status", "monitors", "created_at")
+
