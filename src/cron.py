@@ -38,12 +38,12 @@ def update_data(name: str, monitor: Monitor) -> None:
     - name: Nombre del proveedor.
     - monitor: Instancia de Monitor.
     """
-    # try:
-    provider = Provider(monitor.provider, monitor.currency, monitor.get_all_monitors())
-    cache.set(f'{name}:{monitor.currency}', json.dumps(
-        [m.__dict__ for m in provider.get_list_monitors()], default=str))
-    # except Exception as e:
-    #     logger.warning(f'Error al obtener datos de {monitor.provider.name}: {str(e)}')
+    try:
+        provider = Provider(monitor.provider, monitor.currency, monitor.get_all_monitors())
+        cache.set(f'{name}:{monitor.currency}', json.dumps(
+            [m.__dict__ for m in provider.get_list_monitors()], default=str))
+    except Exception as e:
+        logger.warning(f'Error al obtener datos de {monitor.provider.name}: {str(e)}')
 
 def reload_monitors() -> None:
     """
