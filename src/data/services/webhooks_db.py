@@ -25,17 +25,16 @@ def create_webhook(session: Session, token_user: str, **kwargs) -> None:
     if session.query(Webhook).filter(Webhook.user_id == user.id).count() > 0:
         raise WebhookExistsError('Webhook already exists')
 
-    new_webhook = Webhook(
-        user_id=user.id, 
-        url=kwargs.get('url'), 
-        token=kwargs.get('token'), 
-        certificate_ssl=kwargs.get('certificate_ssl'),
-        created_at=datetime.now()
-        )
-    session.add(new_webhook)
-    session.commit()
-
     try:
+        new_webhook = Webhook(
+            user_id=user.id, 
+            url=kwargs.get('url'), 
+            token=kwargs.get('token'), 
+            certificate_ssl=kwargs.get('certificate_ssl'),
+            created_at=datetime.now()
+            )
+        session.add(new_webhook)
+
         for monitor_data in kwargs.get('monitors'):
             if 'page' not in monitor_data or 'monitor' not in monitor_data:
                 raise MissingKeyError('Cada objeto debe contener page y monitor.')
@@ -55,11 +54,9 @@ def create_webhook(session: Session, token_user: str, **kwargs) -> None:
                 monitor_id=monitor.id
             )
             session.add(new_monitor_webhook)
-            session.commit()
-    except Exception as e:
-        session.query(MonitorsWebhooks).filter(MonitorsWebhooks.webhook_id == new_webhook.id).delete()
-        session.delete(new_webhook)
         session.commit()
+    except Exception as e:
+        session.rollback() # Rollback the transaction
         raise e
     
 def get_webhook(session: Session, token_user: str) -> dict:
