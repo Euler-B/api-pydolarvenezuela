@@ -4,11 +4,11 @@ from sqlalchemy.orm import sessionmaker
 from ..data.engine import engine
 from ..decorators import token_required, handle_exceptions
 from ..data.services.webhooks_db import (
-    send_webhook as _send_webhook_,
     create_webhook as _create_webhook_,
     delete_webhook as _delete_webhook_,
     get_webhook as _get_webhook_
 )
+from ..utils import send_webhook as _send_webhook_
 
 route = Blueprint('webhook', __name__)
 session = sessionmaker(bind=engine)()
