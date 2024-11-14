@@ -1,4 +1,4 @@
-from typing import Literal
+from urllib.parse import urlparse
 from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import sessionmaker
 from ..data.engine import engine
@@ -34,6 +34,17 @@ def set_webhook():
         raise ValueError('Monitors debe tener un máximo de 3 monitores')
     if not all(isinstance(monitor, dict) for monitor in monitors):
         raise ValueError('Monitors debe ser una lista de diccionarios')
+    
+    parsed_url = urlparse(url)
+
+    if not parsed_url.scheme in ['http', 'https']:
+        raise ValueError('La url debe ser http o https')
+    if not url.hostname:
+        raise ValueError('La url debe tener un hostname')
+    if not url.path:
+        raise ValueError('La url debe tener un path')
+    if parsed_url.hostname in ['localhost', '']:
+        raise ValueError('La url no puede ser una dirección local')
 
     # Procesing webhook
     _send_webhook_(url, token_secret, certificate_ssl) # Send webhook to verify the url
