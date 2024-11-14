@@ -38,7 +38,7 @@ def create_webhook(session: Session, token_user: str, **kwargs) -> None:
     try:
         for monitor_data in kwargs.get('monitors'):
             if 'page' not in monitor_data or 'monitor' not in monitor_data:
-                raise MissingKeyError('Cada objeto debe contener page y la clave monitor.')
+                raise MissingKeyError('Cada objeto debe contener page y monitor.')
             
             page = session.query(Page).filter(func.lower(Page.name) == func.lower(monitor_data['page'])).first()
             if not page:
