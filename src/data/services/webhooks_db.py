@@ -1,5 +1,3 @@
-import requests
-from uuid import uuid4
 from typing import Optional
 from datetime import datetime
 from sqlalchemy import func
@@ -8,21 +6,6 @@ from ...exceptions import MissingKeyError, WebhookExistsError
 from ..models import User, Webhook, MonitorsWebhooks, Page, Monitor
 from ..schemas import WebhookSchema
 from .users_db import is_user_valid
-
-def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] = {'message': 'Hello, World!'}) -> None:
-    try:
-        headers = {
-            'Authorization': token,
-            'Content-Type': 'application/json',
-            'X-Request-ID': str(uuid4())
-        }
-
-        response = requests.post(url, headers=headers, json=data, verify=verify, timeout=5)
-        response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        raise Exception(f'Error al enviar el webhook: {e}')
-    except Exception as e:
-        raise e
 
 def create_webhook(session: Session, token_user: str, **kwargs) -> None:    
     if not is_user_valid(session, token_user):
