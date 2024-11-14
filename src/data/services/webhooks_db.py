@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from sqlalchemy import func, distinct
 from sqlalchemy.orm import Session
 from ...exceptions import MissingKeyError, WebhookExistsError
+from ...core import cache
 from ..models import User, Webhook, MonitorsWebhooks, Page, Monitor
 from ..schemas import WebhookSchema
 from .users_db import is_user_valid
@@ -76,7 +77,30 @@ def delete_webhook(session: Session, token_user: str, webhook_id: Optional[int] 
     session.delete(webhook)
     session.commit()
 
-def get_unique_monitor_ids(session: Session) -> list:
+def get_unique_monitor_ids(session: Session) -> List[int]:
     unique_monitor_ids = session.query(distinct(MonitorsWebhooks.monitor_id)).all()
 
     return [monitor_id for monitor_id, in unique_monitor_ids]
+
+# Cache
+
+def get_all_monitor_webhook() -> List[int]:
+    keys = cache.keys('monitor_webhook:*')
+    if not keys:
+        return []
+
+    return [int(key.split(':')[1]) for key in keys if cache.get(key) not in [None, False]]
+
+def set_monitor_webhook(monitor_id: int, boolean: bool) -> None:
+    cache.set(f'monitor_webhook:{monitor_id}', boolean)
+
+def is_monitor_webhook(monitor_id: int) -> bool:
+    return cache.get(f'monitor_webhook:{monitor_id}') is not None
+
+def delete_monitor_webhook(monitor_id: int) -> None:
+    cache.delete(f'monitor_webhook:{monitor_id}')
+
+def delete_all_monitor_webhook() -> None:
+    keys = cache.keys('monitor_webhook:*')
+    for key in keys:
+        cache.delete(key)
