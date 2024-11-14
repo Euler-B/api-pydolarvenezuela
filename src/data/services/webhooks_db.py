@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from sqlalchemy import func
+from sqlalchemy import func, distinct
 from sqlalchemy.orm import Session
 from ...exceptions import MissingKeyError, WebhookExistsError
 from ..models import User, Webhook, MonitorsWebhooks, Page, Monitor
@@ -75,3 +75,8 @@ def delete_webhook(session: Session, token_user: str, webhook_id: Optional[int] 
     session.query(MonitorsWebhooks).filter(MonitorsWebhooks.webhook_id == webhook.id).delete()
     session.delete(webhook)
     session.commit()
+
+def get_unique_monitor_ids(session: Session) -> list:
+    unique_monitor_ids = session.query(distinct(MonitorsWebhooks.monitor_id)).all()
+
+    return [monitor_id for monitor_id, in unique_monitor_ids]
