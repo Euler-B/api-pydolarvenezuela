@@ -11,7 +11,8 @@ from .users_db import is_user_valid
 def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] = {'message': 'Hello, World!'}) -> None:
     try:
         headers = {
-            'Authorization': token
+            'Authorization': token,
+            'Content-Type': 'application/json'
         }
 
         response = requests.post(url, headers=headers, json=data, verify=verify, timeout=5)
