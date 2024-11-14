@@ -1,4 +1,5 @@
 import requests
+from uuid import uuid4
 from typing import Optional
 from datetime import datetime
 from sqlalchemy import func
@@ -12,7 +13,8 @@ def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] = {'me
     try:
         headers = {
             'Authorization': token,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-Request-ID': str(uuid4())
         }
 
         response = requests.post(url, headers=headers, json=data, verify=verify, timeout=5)
