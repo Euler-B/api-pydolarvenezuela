@@ -39,9 +39,9 @@ def set_webhook():
 
     if not parsed_url.scheme in ['http', 'https']:
         raise ValueError('La url debe ser http o https')
-    if not url.hostname:
+    if not parsed_url.hostname:
         raise ValueError('La url debe tener un hostname')
-    if not url.path:
+    if not parsed_url.path:
         raise ValueError('La url debe tener un path')
     if parsed_url.hostname in ['localhost', '']:
         raise ValueError('La url no puede ser una dirección local')
