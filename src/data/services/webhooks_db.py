@@ -82,6 +82,9 @@ def get_unique_monitor_ids(session: Session) -> List[int]:
 
     return [monitor_id for monitor_id, in unique_monitor_ids]
 
+def get_all_webhooks(session: Session) -> List[Webhook]:
+    return session.query(Webhook).all()
+
 # Cache
 
 def get_all_monitor_webhook() -> List[int]:
