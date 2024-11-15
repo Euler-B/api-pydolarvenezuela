@@ -2,6 +2,7 @@ from typing import List
 from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+from ...utils import get_provider
 from ..models import Page, Monitor, Currency, MonitorPriceHistory
 from .webhooks_db import (
     get_unique_monitor_ids as _get_unique_monitor_ids_,
@@ -39,7 +40,8 @@ def create_page(session: Session, name: str, url: str) -> int:
     return page.id
 
 def delete_page(session: Session, name: str) -> None:
-    page = session.query(Page).filter(func.lower(Page.name) == func.lower(name)).first()
+    provider_name = get_provider(name)
+    page = session.query(Page).filter(func.lower(Page.name) == func.lower(provider_name)).first()
     if not page:
         raise Exception("La pagina no fue encontrada.")
     
