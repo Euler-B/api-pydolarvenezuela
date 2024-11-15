@@ -106,4 +106,4 @@ def delete_monitor_webhook(monitor_id: int) -> None:
 def delete_all_monitor_webhook() -> None:
     keys = cache.keys('monitor_webhook:*')
     for key in keys:
-        cache.set(key, 0)
+        set_monitor_webhook(int(key.split(':')[1]), False)
