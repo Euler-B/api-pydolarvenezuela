@@ -1,4 +1,4 @@
-import requests
+import httpx
 from uuid import uuid4
 from typing import Optional
 
@@ -10,10 +10,10 @@ async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] 
             'X-Request-ID': str(uuid4())
         }
 
-        with requests.Session() as session:
-            response = await session.post(url, headers=headers, json=data, verify=verify, timeout=5)
+        async with httpx.AsyncClient(verify=verify) as client:
+            response = await client.post(url, headers=headers, json=data, timeout=5)
             response.raise_for_status()
-    except requests.exceptions.RequestException as e:
+    except httpx.RequestError as e:
         raise Exception(f'Error al enviar el webhook: {e}')
     except Exception as e:
         raise e
