@@ -1,8 +1,10 @@
+import logging
 from typing import Optional, List
 from datetime import datetime
 from sqlalchemy import func, distinct
 from sqlalchemy.orm import Session
 from ...exceptions import MissingKeyError, WebhookExistsError
+from ...utils import get_provider
 from ...core import cache
 from ..models import User, Webhook, MonitorsWebhooks, Page, Monitor
 from ..schemas import WebhookSchema
@@ -31,7 +33,8 @@ def create_webhook(session: Session, token_user: str, **kwargs) -> None:
             if 'page' not in monitor_data or 'monitor' not in monitor_data:
                 raise MissingKeyError('Cada objeto debe contener page y monitor.')
             
-            page = session.query(Page).filter(func.lower(Page.name) == func.lower(monitor_data['page'])).first()
+            provider_name = get_provider(monitor_data['page'])
+            page = session.query(Page).filter(func.lower(Page.name) == func.lower(provider_name)).first()
             if not page:
                 raise ValueError('Pagina no encontrada')
             
