@@ -9,8 +9,7 @@ class BaseSchema(ma.Schema):
         self.custom_format = kwargs.pop('custom_format', 'default')
         super().__init__(*args, **kwargs)
     
-    @pre_dump
-    def adjust_timezone(self, data, **kwargs):
+    def _adjust_timezone_not_object(self, data):
         if 'last_update' in data and data['last_update']:
             last_update = datetime.fromisoformat(data['last_update']).astimezone(TIME_ZONE)
             if self.custom_format == 'iso':
@@ -20,6 +19,18 @@ class BaseSchema(ma.Schema):
             else:
                 data['last_update'] = last_update.strftime('%d/%m/%Y, %I:%M %p')
         return data
+    
+    def _adjust_timezone_object(self, data): 
+        if hasattr(data, 'last_update') and data.last_update:
+            last_update = data.last_update.astimezone(TIME_ZONE)
+            data.last_update = last_update.isoformat()
+        return data
+
+    @pre_dump
+    def adjust_timezone(self, data, **kwargs):
+        if isinstance(data, dict):
+            return self._adjust_timezone_not_object(data)
+        return self._adjust_timezone_object(data)
 
 class UserSchema(ma.Schema):
     created_at = fields.DateTime(format='%d/%m/%Y, %I:%M %p')
