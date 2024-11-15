@@ -9,7 +9,6 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   - url: https://pydolarve.org/
-  - url: http://localhost:8000/
 tags:
   - name: GET
 
