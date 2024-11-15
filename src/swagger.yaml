@@ -9,6 +9,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   - url: https://pydolarve.org/
+  - url: http://localhost:8000/
 tags:
   - name: GET
 
@@ -57,6 +58,8 @@ paths:
           description: Error.
         404:
           description: No se pudo encontrar la página que estaba buscando.
+        500:
+          description: Error en el servidor.
   /api/v1/{currency}/conversion:
     get:
       tags:
@@ -102,6 +105,8 @@ paths:
                 $ref: '#/components/schemas/Conversion'
         400:
           description: Error.
+        500:
+          description: Error en el servidor.
   /api/v1/{currency}/history:
     get:
       tags:
@@ -156,8 +161,8 @@ paths:
                 $ref: '#/components/schemas/History'
         400:
           description: Error.
-        404:
-          description: No se pudo encontrar la página que estaba buscando.
+        500:
+          description: Error en el servidor.
   /api/v1/{currency}/changes:
     get:
       tags:
@@ -206,8 +211,92 @@ paths:
                 $ref: '#/components/schemas/Changes'
         400:
           description: Error.
-        404:
-          description: No se pudo encontrar la página que estaba buscando.
+        500:
+          description: Error en el servidor.
+
+  /api/user/set-webhook:
+    post:
+      tags:
+        - Webhook
+      summary: Establece un webhook para recibir notificaciones de actualizaciones de precios.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: La URL del webhook.
+                certifivate_ssl:
+                  type: boolean
+                  description: Si el webhook requiere un certificado SSL.
+                token_secret:
+                  type: string
+                  description: El token secreto del webhook.
+                monitors:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      page:
+                        type: string
+                        description: La página de la que se quiere obtener la información.
+                      monitor:
+                        type: string
+                        description: El monitor específico del que se quiere obtener la información.
+                  description: Los monitores de los que se quiere recibir notificaciones.
+      security:
+        - BearerAuth: []
+      responses:
+        201:
+          description: Webhook establecido correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookOK'
+        400:
+          description: Error.
+        500:
+          description: Error en el servidor.
+  /api/user/del-webhook:
+    delete:
+      tags:
+        - Webhook
+      summary: Elimina un webhook para dejar de recibir notificaciones de actualizaciones de precios.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Webhook eliminado correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookDelete'
+        400:
+          description: Error.
+        500:
+          description: Error en el servidor.
+
+  /api/user/get-webhook:
+    get:
+      tags:
+        - Webhook
+      summary: Obtiene todos los webhooks establecidos.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Webhooks obtenidos correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookGet'
+        400:
+          description: Error.
+        500:
+          description: Error en el servidor.
 
 components:
   securitySchemes:
@@ -313,3 +402,46 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MonitorDataChanges'
+    
+    WebhookOK:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Webhook creado con éxito.
+    
+    WebhookDelete:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Webhook eliminado con éxito.
+
+    WebhookGet:
+      type: array
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            format: uri
+          certifivate_ssl:
+            type: boolean
+            format: boolean
+          token:
+            type: string
+            format: password
+          created_at:
+            type: string
+            format: date-time
+          id:
+            type: integer
+            format: int32
+          monitors:
+            type: array
+            items:
+              type: object
+              properties:
+                monitor_id:
+                  type: integer
+                  format: int32
