@@ -122,6 +122,14 @@ def get_monitor(session: Session, page_id: int, currency_id: int, monitor: str) 
     
     return monitor
 
+def get_monitor_by_id(session: Session, monitor_id: int) -> Monitor:
+    monitor = session.query(Monitor).filter(Monitor.id == monitor_id).first()
+    
+    if not monitor:
+        raise Exception("El monitor no fue encontrado.")
+    
+    return monitor
+
 def get_list_monitors(session: Session, page_id: int, currency_id: int) -> List[Monitor]:
     return session.query(Monitor).filter(
         Monitor.page_id == page_id, Monitor.currency_id == currency_id
