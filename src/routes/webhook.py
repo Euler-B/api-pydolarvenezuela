@@ -1,3 +1,4 @@
+import asyncio
 from urllib.parse import urlparse
 from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import sessionmaker
@@ -43,11 +44,11 @@ def set_webhook():
         raise ValueError('La url debe tener un hostname')
     if not parsed_url.path:
         raise ValueError('La url debe tener un path')
-    if parsed_url.hostname in ['localhost', '']:
-        raise ValueError('La url no puede ser una dirección local')
+    # if parsed_url.hostname in ['localhost', '']:
+    #     raise ValueError('La url no puede ser una dirección local')
 
     # Procesing webhook
-    _send_webhook_(url, token_secret, certificate_ssl) # Send webhook to verify the url
+    asyncio.run(_send_webhook_(url, token_secret, certificate_ssl)) # Send webhook to verify the url
     _create_webhook_(session, token_user, 
                      url=url, 
                      token=token_secret, 

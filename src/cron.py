@@ -1,4 +1,5 @@
 import json
+import asyncio
 from datetime import datetime
 from pyDolarVenezuela.pages import (
     AlCambio, 
@@ -119,7 +120,9 @@ def send_webhooks() -> None:
             monitors_ids_save[m.monitor_id] = monitor
             data.append(MonitorSchema().dump(monitor))
         try:
-            _send_webhook_(webhook.url, webhook.token, webhook.certificate_ssl, json.dumps({'monitors': data}))
+            asyncio.run(
+                _send_webhook_(webhook.url, webhook.token, webhook.certificate_ssl, json.dumps({'monitors': data}))
+            )
         except Exception as e:
             logger.error(f'Error al enviar el webhook: {str(e)}')
     delete_all_monitor_webhook()
