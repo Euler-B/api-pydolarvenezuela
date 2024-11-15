@@ -88,6 +88,7 @@ def update_monitor(session: Session, page_id: int, currency_id: int, monitor_id:
 
     data = {
         'price': new_price,
+        'price_old': old_price,
         'change': change,
         'percent': percent,
         'color': color,
