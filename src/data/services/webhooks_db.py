@@ -92,10 +92,10 @@ def get_all_monitor_webhook() -> List[int]:
     if not keys:
         return []
 
-    return [int(key.split(':')[1]) for key in keys if cache.get(key) not in [None, False]]
+    return [int(key.split(':')[1]) for key in keys if cache.get(key) not in [None, 0]]
 
 def set_monitor_webhook(monitor_id: int, boolean: bool) -> None:
-    cache.set(f'monitor_webhook:{monitor_id}', boolean)
+    cache.set(f'monitor_webhook:{monitor_id}', int(boolean))
 
 def is_monitor_webhook(monitor_id: int) -> bool:
     return cache.get(f'monitor_webhook:{monitor_id}') is not None
