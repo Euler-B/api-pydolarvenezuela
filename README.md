@@ -99,6 +99,46 @@ Ruta:
 | page       | `string` | Indica el nombre de la página donde deseas obtener su valor. |
 | monitor    | `string` | Indica el monitor específico. |
 
+### Webhooks
+
+La API de pyDolarVenezuela también permite configurar webhooks para recibir notificaciones en tiempo real sobre los cambios de precios de los monitores. Para ello, debes proporcionar la URL de tu servidor y el token de autorización correspondiente.
+
+### `GET /api/user/get-webhook`
+
+Este endpoint permite obtener todos los webhooks configurados por el usuario.
+
+Header:
+- `Authorization`: El token de autorización correspondiente al usuario.
+
+### `POST /api/user/set-webhook`
+
+Este endpoint permite configurar un webhook para recibir notificaciones en tiempo real sobre los cambios de precios de los monitores.
+
+Header:
+- `Authorization`: El token de autorización correspondiente al usuario.
+
+Body:
+```json
+{
+  "url": "string",
+  "certificate_ssl": true,
+  "token_secret": "string",
+  "monitors": [
+    {
+      "page": "string",
+      "monitor": "string"
+    }
+  ]
+}
+```
+
+### `DELETE /api/user/del-webhook`
+
+Este endpoint permite eliminar un webhook configurado previamente.
+
+Header:
+- `Authorization`: El token de autorización correspondiente al usuario.
+
 ## Actividad
 
 ![Alt](https://repobeats.axiom.co/api/embed/7fc602e88410dfba302fe708f14e0e30d059a729.svg "Repobeats analytics image")
