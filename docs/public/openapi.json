@@ -504,7 +504,39 @@
           "monitors": {
             "type": "object",
             "properties": {
-              "$ref": "#/components/schemas/Monitor"
+              "change": {
+                "type": "number",
+                "format": "float"
+              },
+              "color": {
+                "type": "string"
+              },
+              "image": {
+                "type": "string",
+                "format": "uri"
+              },
+              "last_update": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "percent": {
+                "type": "number",
+                "format": "float"
+              },
+              "price": {
+                "type": "number",
+                "format": "float"
+              },
+              "price_old": {
+                "type": "number",
+                "format": "float"
+              },
+              "symbol": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
             }
           }
         }
