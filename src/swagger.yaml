@@ -11,7 +11,7 @@ servers:
   - url: https://pydolarve.org/
 tags:
   - name: GET
-  - Webhook
+  - name: Webhook
 
 paths:
   /api/v1/{currency}:
