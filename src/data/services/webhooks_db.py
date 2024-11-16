@@ -120,11 +120,11 @@ def delete_all_monitor_webhook() -> None:
         set_monitor_webhook(int(key.split(':')[1]), False)
 
 def set_webhook_status(webhook_id: int, intents: int) -> None:
-    intents_c = cache.get(f'webhook_status:{webhook_id}') if cache.get(f'webhook_status:{webhook_id}') else 0
+    intents_c = int(cache.get(f'webhook_status:{webhook_id}')) if cache.get(f'webhook_status:{webhook_id}') else 0
     cache.set(f'webhook_status:{webhook_id}', intents_c + intents)
 
 def is_intents_webhook_limit(webhook_id: int) -> bool:
-    return cache.get(f'webhook_status:{webhook_id}') == 3 if cache.get(f'webhook_status:{webhook_id}') else False
+    return int(cache.get(f'webhook_status:{webhook_id}')) == 3 if cache.get(f'webhook_status:{webhook_id}') else False
 
 def delete_webhook_status(webhook_id: int) -> None:
     cache.delete(f'webhook_status:{webhook_id}')
