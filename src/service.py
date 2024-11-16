@@ -1,6 +1,7 @@
 import json
 import re
 from typing import Union, Optional, Literal, Dict, List, Any
+from datetime import datetime
 from pyDolarVenezuela import getdate, currency_converter
 from sqlalchemy.orm import sessionmaker
 from .data.engine import engine
@@ -135,9 +136,14 @@ def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: st
             currency = CURRENCIES.get(currency, currency)  
 
             if name_page == page and monitor.currency == currency:
-                _, page_id = _is_exist_page_(session, monitor.provider.name)
-                _, currency_id = _is_exist_currency_(session, monitor.currency)
+                _p, page_id = _is_exist_page_(session, monitor.provider.name)
+                _c, currency_id = _is_exist_currency_(session, monitor.currency)
+                
+                if re.match(r'\d{2}-\d{2}-\d{4}', start_date) is None or re.match(r'\d{2}-\d{2}-\d{4}', end_date) is None:
+                    raise ValueError('El formato de la fecha debe ser: dd-mm-yyyy.')
 
+                start_date  = datetime.strptime(start_date, "%d-%m-%Y").date()
+                end_date    = datetime.strptime(end_date, "%d-%m-%Y").date()
                 results = fetch_monitor_data(page_id, currency_id, monitor_code, start_date, end_date, data_type)  
                 
                 if not results:
