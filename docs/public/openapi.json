@@ -12,7 +12,7 @@
   },
   "servers": [
     {
-      "url": "https://pydolarve.org/"
+      "url": "https://pydolarve.org"
     }
   ],
   "tags": [
@@ -503,7 +503,7 @@
           },
           "monitors": {
             "type": "object",
-            "additionalProperties": {
+            "properties": {
               "$ref": "#/components/schemas/Monitor"
             }
           }
