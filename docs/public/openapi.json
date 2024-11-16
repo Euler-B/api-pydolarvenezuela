@@ -26,9 +26,7 @@
   "paths": {
     "/api/v1/{currency}": {
       "get": {
-        "tags": [
-          "Dólar"
-        ],
+        "tags": ["Dólar"],
         "summary": "Obtener monitores",
         "description": "Obtiene información de un monitor específico o de todos los monitores en una página.",
         "parameters": [
@@ -38,7 +36,9 @@
             "required": true,
             "description": "La moneda en la que se expresarán los precios (dollar, euro).",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "dollar",
+              "enum": ["dollar", "euro"]
             }
           },
           {
@@ -68,7 +68,8 @@
             "description": "Convertir un formato de fecha específico. (`iso`, `timestamp`, `default`).",
             "schema": {
               "type": "string",
-              "default": "default"
+              "example": "default",
+              "enum": ["default", "iso", "timestamp"]
             }
           }
         ],
@@ -97,9 +98,7 @@
     },
     "/api/v1/{currency}/conversion": {
       "get": {
-        "tags": [
-          "Dólar"
-        ],
+        "tags": ["Dólar"],
         "summary": "Convertir valor",
         "description": "Convierte un valor en bolívares a su equivalente a estas monedas extranjeras y viceversa.",
         "parameters": [
@@ -109,7 +108,9 @@
             "required": true,
             "description": "La moneda en la que se expresarán los precios (dollar, euro).",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "dollar",
+              "enum": ["dollar", "euro"]
             }
           },
           {
@@ -171,9 +172,7 @@
     },
     "/api/v1/{currency}/history": {
       "get": {
-        "tags": [
-          "Dólar"
-        ],
+        "tags": ["Dólar"],
         "summary": "Obtener historial",
         "description": "Obtiene el historial de precios de un monitor específico en una página.",
         "parameters": [
@@ -183,7 +182,9 @@
             "required": true,
             "description": "La moneda en la que se expresarán los precios (dollar, euro).",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "dollar",
+              "enum": ["dollar", "euro"]
             }
           },
           {
@@ -211,7 +212,8 @@
             "description": "Convertir un formato de fecha específico. (`iso`, `timestamp`, `default`).",
             "schema": {
               "type": "string",
-              "default": "default"
+              "example": "default",
+              "enum": ["default", "iso", "timestamp"]
             }
           },
           {
@@ -260,9 +262,7 @@
     },
     "/api/v1/{currency}/changes": {
       "get": {
-        "tags": [
-          "Dólar"
-        ],
+        "tags": ["Dólar"],
         "summary": "Obtener cambios",
         "description": "Obtiene actualizaciones de precios realizadas en un día especifico de un monitor en una página.",
         "parameters": [
@@ -272,7 +272,9 @@
             "required": true,
             "description": "La moneda en la que se expresarán los precios (dollar, euro).",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "dollar",
+              "enum": ["dollar", "euro"]
             }
           },
           {
@@ -300,7 +302,8 @@
             "description": "Convertir un formato de fecha específico. (`iso`, `timestamp`, `default`).",
             "schema": {
               "type": "string",
-              "default": "default"
+              "example": "default",
+              "enum": ["default", "iso", "timestamp"]
             }
           },
           {
@@ -340,9 +343,7 @@
     },
     "/api/user/set-webhook": {
       "post": {
-        "tags": [
-          "Webhook"
-        ],
+        "tags": ["Webhook"],
         "summary": "Establecer webhook",
         "description": "Establece un webhook para recibir notificaciones de actualizaciones de precios.",
         "requestBody": {
@@ -413,9 +414,7 @@
     },
     "/api/user/del-webhook": {
       "delete": {
-        "tags": [
-          "Webhook"
-        ],
+        "tags": ["Webhook"],
         "summary": "Eliminar webhook",
         "description": "Elimina un webhook para dejar de recibir notificaciones de actualizaciones de precios.",
         "security": [
@@ -445,9 +444,7 @@
     },
     "/api/user/get-webhook": {
       "get": {
-        "tags": [
-          "Webhook"
-        ],
+        "tags": ["Webhook"],
         "summary": "Obtener los webhooks establecidos.",
         "description": "Obtiene todos los webhooks establecidos.",
         "security": [
