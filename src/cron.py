@@ -132,11 +132,11 @@ def send_webhooks() -> None:
         except Exception as e:
             logger.error(f'Error al enviar el webhook: {str(e)}')
 
-            if not is_intents_webhook_limit(session, webhook.id):
-                set_webhook_status(session, webhook.id, 1)
+            if not is_intents_webhook_limit(webhook.id):
+                set_webhook_status(webhook.id, 1)
             else:
                 change_webhook_status(session, webhook.id, False)
-                delete_webhook_status(session, webhook.id)
+                delete_webhook_status(webhook.id)
                 logger.info(f'Webhook desactivado por superar el límite de intentos: {webhook.url}')
 
     delete_all_monitor_webhook()
