@@ -1,4 +1,5 @@
 import json
+import asyncio
 from datetime import datetime
 from pyDolarVenezuela.pages import (
     AlCambio, 
@@ -8,21 +9,28 @@ from pyDolarVenezuela.pages import (
     EnParaleloVzla, 
     Italcambio
 )
-from pyDolarVenezuela import Monitor, Database, CheckVersion
+from pyDolarVenezuela import Monitor, CheckVersion
 from .core import logger
 from .core import cache
 from .consts import (
-    SQL_HOST,
-    SQL_MOTOR,
-    SQL_DB_NAME,
-    SQL_PORT,
-    SQL_USER,
-    SQL_PASSWORD,
     TIME_ZONE,
     CURRENCIES,
     PROVIDERS,
     UPDATE_SCHEDULE
 )
+from ._provider import Provider
+from .data.services.webhooks_db import (
+    get_all_monitor_webhook,
+    change_webhook_status, 
+    delete_all_monitor_webhook,
+    get_all_webhooks,
+    set_webhook_status,
+    is_intents_webhook_limit,
+    delete_webhook_status
+)
+from .data.schemas import MonitorSchema
+from .data.services.monitors_db import get_monitor_by_id as _get_monitor_by_id_
+from .utils import send_webhook as _send_webhook_
 from .backup import backup
 from .storage.dropbox import DropboxStorage
 from .storage.telegram import TelegramStorage
@@ -30,9 +38,11 @@ from .storage.telegram import TelegramStorage
 CheckVersion.check = False
 
 pages    = [AlCambio, BCV, CriptoDolar, DolarToday, EnParaleloVzla, Italcambio]
-monitors = [Monitor(page, currency, db=Database(
-    SQL_MOTOR, SQL_HOST, SQL_DB_NAME, SQL_PORT, SQL_USER, SQL_PASSWORD
-    )) for currency in CURRENCIES.values() for page in pages if currency in page.currencies]
+monitors = [
+    Monitor(page, currency) 
+    for currency in CURRENCIES.values() 
+    for page in pages if currency in page.currencies
+]
 
 def update_data(name: str, monitor: Monitor) -> None:
     """
@@ -42,8 +52,9 @@ def update_data(name: str, monitor: Monitor) -> None:
     - monitor: Instancia de Monitor.
     """
     try:
+        provider = Provider(monitor.provider, monitor.currency, monitor.get_all_monitors())
         cache.set(f'{name}:{monitor.currency}', json.dumps(
-            [m.__dict__ for m in monitor.get_all_monitors()], default=str))
+            [m.__dict__ for m in provider.get_list_monitors()], default=str))
     except Exception as e:
         logger.warning(f'Error al obtener datos de {monitor.provider.name}: {str(e)}')
 
@@ -55,6 +66,7 @@ def reload_monitors() -> None:
         name = PROVIDERS.get(monitor.provider.name)
         logger.info(f'Recargando datos de "{monitor.provider.name}".')
         update_data(name, monitor)
+    send_webhooks()
 
 def job() -> None:
     """
@@ -81,6 +93,53 @@ def job() -> None:
                 logger.info(f'Actualizando datos de "{monitor.provider.name}".')
                 update_data(name, monitor)
                 break
+    send_webhooks()
+
+def send_webhooks() -> None:
+    """
+    Envía los webhooks a los monitores.
+    """
+    from sqlalchemy.orm import sessionmaker
+    from .data.engine import engine
+
+    session = sessionmaker(bind=engine)()
+
+    monitor_webhooks = get_all_monitor_webhook()
+    if not monitor_webhooks:
+        return
+    
+    monitors_ids_save = {}
+    for webhook in get_all_webhooks(session):
+        if not webhook.status:
+            continue
+        data = []
+
+        for m in webhook.monitors:
+            if m.monitor_id not in monitor_webhooks:
+                continue
+            
+            if m.monitor_id in monitors_ids_save:
+                data.append(monitors_ids_save[m.monitor_id])
+                continue
+
+            monitor = _get_monitor_by_id_(session, m.monitor_id)
+            monitors_ids_save[m.monitor_id] = monitor
+            data.append(MonitorSchema().dump(monitor))
+        try:
+            asyncio.run(
+                _send_webhook_(webhook.url, webhook.token, webhook.certificate_ssl, json.dumps({'monitors': data}))
+            )
+        except Exception as e:
+            logger.error(f'Error al enviar el webhook: {str(e)}')
+
+            if not is_intents_webhook_limit(webhook.id):
+                set_webhook_status(webhook.id, 1)
+            else:
+                change_webhook_status(session, webhook.id, False)
+                delete_webhook_status(webhook.id)
+                logger.info(f'Webhook desactivado por superar el límite de intentos: {webhook.url}')
+
+    delete_all_monitor_webhook()
 
 def upload_backup_dropbox() -> None:
     """
