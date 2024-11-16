@@ -28,3 +28,4 @@ Si deseas conocer características interesantes de la API de por vida, considera
 | --------------- | ------ | ------ |
 | Solicitudes API | 500/hora | ∞ |
 | Historial de precios | No | Sí |
+| Webhooks | No | Sí |
