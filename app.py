@@ -15,7 +15,8 @@ from src.exceptions import (
     method_not_allowed,
     page_not_found,
     internal_server_error,
-    gateway_timeout
+    gateway_timeout,
+    too_many_requests
 )
 
 if GETLOGS:
@@ -44,6 +45,7 @@ app.register_error_handler(HTTPException, handle_http_exception)
 app.register_error_handler(403, forbidden)
 app.register_error_handler(404, page_not_found)
 app.register_error_handler(405, method_not_allowed)
+app.register_error_handler(429, too_many_requests)
 app.register_error_handler(500, internal_server_error)
 app.register_error_handler(504, gateway_timeout)
 
