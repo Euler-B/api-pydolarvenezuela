@@ -133,7 +133,7 @@ def send_webhooks() -> None:
             logger.error(f'Error al enviar el webhook: {str(e)}')
 
             if not is_intents_webhook_limit(session, webhook.id):
-                set_webhook_status(session, webhook.id, False)
+                set_webhook_status(session, webhook.id, 1)
             else:
                 change_webhook_status(session, webhook.id, False)
                 delete_webhook_status(session, webhook.id)
