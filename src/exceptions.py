@@ -47,6 +47,10 @@ def method_not_allowed(e):
     result = HTTPException(405, "El método de solicitud no es compatible con la funcionalidad de la página.")
     return handle_http_exception(result)
 
+def too_many_requests(e):
+    result = HTTPException(429, "La cantidad de solicitudes excede el límite permitido por el servidor.")
+    return handle_http_exception(result)
+
 def internal_server_error(e):
     result = HTTPException(500, "Error interno del servidor.")
     return handle_http_exception(result)
