@@ -228,7 +228,7 @@ paths:
                 url:
                   type: string
                   description: La URL del webhook.
-                certifivate_ssl:
+                certificate_ssl:
                   type: boolean
                   description: Si el webhook requiere un certificado SSL.
                 token_secret:
@@ -424,7 +424,7 @@ components:
           url:
             type: string
             format: uri
-          certifivate_ssl:
+          certificate_ssl:
             type: boolean
             format: boolean
           token:

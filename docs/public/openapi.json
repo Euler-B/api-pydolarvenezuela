@@ -4,7 +4,7 @@
   "info": {
     "title": "PyDolarVenezuela API",
     "description": "Esta es la documentación de la API de pyDolarVenezuela donde sabrás cómo utilizar cada endpoint.",
-    "version": "2.0.1",
+    "version": "2.0.3",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -12,12 +12,15 @@
   },
   "servers": [
     {
-      "url": "https://pydolarve.org"
+      "url": "https://pydolarve.org/"
     }
   ],
   "tags": [
     {
       "name": "Dólar"
+    },
+    {
+      "name": "Webhook"
     }
   ],
   "paths": {
@@ -27,8 +30,7 @@
           "Dólar"
         ],
         "summary": "Obtener monitores",
-        "description": "Si se especifica un monitor, se obtendrá la información de ese monitor. Si no se especifica, se obtendrá la información de todos los monitores. \n\n**Las páginas disponibles son**: \n - Al Cambio (`alcambio`)  \n - Banco Central de Venezuela (`bcv`) \n - Criptodolar (`criptodolar`) \n - Dolartoday (`dolartoday`) \n - EnParaleloVzla (`enparalelovzla`) \n - Italcambio (`italcambio`)",
-        "operationId": "getMonitors",
+        "description": "Obtiene información de un monitor específico o de todos los monitores en una página.",
         "parameters": [
           {
             "name": "currency",
@@ -36,8 +38,7 @@
             "required": true,
             "description": "La moneda en la que se expresarán los precios (dollar, euro).",
             "schema": {
-              "type": "string",
-              "example": "dollar"
+              "type": "string"
             }
           },
           {
@@ -47,8 +48,7 @@
             "description": "La página de la que se quiere obtener la información.",
             "schema": {
               "type": "string",
-              "default": "criptodolar",
-              "example": "criptodolar"
+              "default": "criptodolar"
             }
           },
           {
@@ -79,25 +79,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AllMonitors"
-                },
-                "example": {
-                  "datetime": {
-                    "date": "2024-01-01",
-                    "time": "12:00:00"
-                  },
-                  "monitors": {
-                    "monitor": {
-                      "change": 1.23,
-                      "color": "green",
-                      "image": "https://example.com/image.png",
-                      "last_update": "2024-01-01T12:00:00Z",
-                      "percent": 0.5,
-                      "price": 100.0,
-                      "price_old": 99.0,
-                      "symbol": "+",
-                      "title": "Monitor 1"
-                    }
-                  }
                 }
               }
             }
@@ -107,6 +88,9 @@
           },
           "404": {
             "description": "No se pudo encontrar la página que estaba buscando."
+          },
+          "500": {
+            "description": "Error en el servidor."
           }
         }
       }
@@ -118,7 +102,6 @@
         ],
         "summary": "Convertir valor",
         "description": "Convierte un valor en bolívares a su equivalente a estas monedas extranjeras y viceversa.",
-        "operationId": "getConversion",
         "parameters": [
           {
             "name": "currency",
@@ -126,8 +109,7 @@
             "required": true,
             "description": "La moneda en la que se expresarán los precios (dollar, euro).",
             "schema": {
-              "type": "string",
-              "example": "dollar"
+              "type": "string"
             }
           },
           {
@@ -136,8 +118,7 @@
             "required": true,
             "description": "El tipo de conversión. Puede ser (VES, USD, EUR).",
             "schema": {
-              "type": "string",
-              "example": "VES"
+              "type": "string"
             }
           },
           {
@@ -146,8 +127,7 @@
             "required": true,
             "description": "El valor a convertir.",
             "schema": {
-              "type": "number",
-              "example": 1000
+              "type": "number"
             }
           },
           {
@@ -156,8 +136,7 @@
             "required": true,
             "description": "La página de la que se quiere obtener la información.",
             "schema": {
-              "type": "string",
-              "example": "bcv"
+              "type": "string"
             }
           },
           {
@@ -166,8 +145,7 @@
             "required": true,
             "description": "El monitor específico del que se quiere obtener la información.",
             "schema": {
-              "type": "string",
-              "example": "usd"
+              "type": "string"
             }
           }
         ],
@@ -178,13 +156,15 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Conversion"
-                },
-                "example": 123.45
+                }
               }
             }
           },
           "400": {
             "description": "Error."
+          },
+          "500": {
+            "description": "Error en el servidor."
           }
         }
       }
@@ -196,7 +176,6 @@
         ],
         "summary": "Obtener historial",
         "description": "Obtiene el historial de precios de un monitor específico en una página.",
-        "operationId": "getHistory",
         "parameters": [
           {
             "name": "currency",
@@ -204,8 +183,7 @@
             "required": true,
             "description": "La moneda en la que se expresarán los precios (dollar, euro).",
             "schema": {
-              "type": "string",
-              "example": "dollar"
+              "type": "string"
             }
           },
           {
@@ -214,8 +192,7 @@
             "required": true,
             "description": "La página de la que se quiere obtener la información.",
             "schema": {
-              "type": "string",
-              "example": "bcv"
+              "type": "string"
             }
           },
           {
@@ -224,8 +201,7 @@
             "required": true,
             "description": "El monitor específico del que se quiere obtener la información.",
             "schema": {
-              "type": "string",
-              "example": "usd"
+              "type": "string"
             }
           },
           {
@@ -244,8 +220,7 @@
             "required": true,
             "description": "Fecha de inicio del historial.",
             "schema": {
-              "type": "string",
-              "example": "01-01-2024"
+              "type": "string"
             }
           },
           {
@@ -254,8 +229,7 @@
             "required": true,
             "description": "Fecha de fin del historial.",
             "schema": {
-              "type": "string",
-              "example": "01-01-2024"
+              "type": "string"
             }
           }
         ],
@@ -271,17 +245,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/History"
-                },
-                "example": {
-                  "datetime": "2024-01-01T12:00:00Z",
-                  "history": [
-                    {
-                      "price": 100.0,
-                      "price_high": 100.0,
-                      "price_low": 100.0,
-                      "last_update": "2024-01-01T12:00:00Z"
-                    }
-                  ]
                 }
               }
             }
@@ -289,8 +252,8 @@
           "400": {
             "description": "Error."
           },
-          "404": {
-            "description": "No se pudo encontrar la página que estaba buscando."
+          "500": {
+            "description": "Error en el servidor."
           }
         }
       }
@@ -302,7 +265,6 @@
         ],
         "summary": "Obtener cambios",
         "description": "Obtiene actualizaciones de precios realizadas en un día especifico de un monitor en una página.",
-        "operationId": "getChanges",
         "parameters": [
           {
             "name": "currency",
@@ -310,8 +272,7 @@
             "required": true,
             "description": "La moneda en la que se expresarán los precios (dollar, euro).",
             "schema": {
-              "type": "string",
-              "example": "dollar"
+              "type": "string"
             }
           },
           {
@@ -320,8 +281,7 @@
             "required": true,
             "description": "La página de la que se quiere obtener la información.",
             "schema": {
-              "type": "string",
-              "example": "enparalelovzla"
+              "type": "string"
             }
           },
           {
@@ -330,8 +290,7 @@
             "required": true,
             "description": "El monitor específico del que se quiere obtener la información.",
             "schema": {
-              "type": "string",
-              "example": "enparalelovzla"
+              "type": "string"
             }
           },
           {
@@ -350,8 +309,7 @@
             "required": true,
             "description": "Fecha de inicio del historial.",
             "schema": {
-              "type": "string",
-              "example": "01-01-2024"
+              "type": "string"
             }
           }
         ],
@@ -367,15 +325,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Changes"
-                },
-                "example": {
-                  "datetime": "2024-01-01T12:00:00Z",
-                  "changes": [
-                    {
-                      "price": 100.0,
-                      "last_update": "2024-01-01T12:00:00Z"
-                    }
-                  ]
                 }
               }
             }
@@ -383,8 +332,145 @@
           "400": {
             "description": "Error."
           },
-          "404": {
-            "description": "No se pudo encontrar la página que estaba buscando."
+          "500": {
+            "description": "Error en el servidor."
+          }
+        }
+      }
+    },
+    "/api/user/set-webhook": {
+      "post": {
+        "tags": [
+          "Webhook"
+        ],
+        "summary": "Establecer webhook",
+        "description": "Establece un webhook para recibir notificaciones de actualizaciones de precios.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "description": "La URL del webhook."
+                  },
+                  "certificate_ssl": {
+                    "type": "boolean",
+                    "description": "Si el webhook requiere un certificado SSL."
+                  },
+                  "token_secret": {
+                    "type": "string",
+                    "description": "El token secreto del webhook."
+                  },
+                  "monitors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "string",
+                          "description": "La página de la que se quiere obtener la información."
+                        },
+                        "monitor": {
+                          "type": "string",
+                          "description": "El monitor específico del que se quiere obtener la información."
+                        }
+                      }
+                    },
+                    "description": "Los monitores de los que se quiere recibir notificaciones."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook establecido correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookOK"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error."
+          },
+          "500": {
+            "description": "Error en el servidor."
+          }
+        }
+      }
+    },
+    "/api/user/del-webhook": {
+      "delete": {
+        "tags": [
+          "Webhook"
+        ],
+        "summary": "Eliminar webhook",
+        "description": "Elimina un webhook para dejar de recibir notificaciones de actualizaciones de precios.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook eliminado correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookDelete"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error."
+          },
+          "500": {
+            "description": "Error en el servidor."
+          }
+        }
+      }
+    },
+    "/api/user/get-webhook": {
+      "get": {
+        "tags": [
+          "Webhook"
+        ],
+        "summary": "Obtener los webhooks establecidos.",
+        "description": "Obtiene todos los webhooks establecidos.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhooks obtenidos correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookGet"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error."
+          },
+          "500": {
+            "description": "Error en el servidor."
           }
         }
       }
@@ -417,59 +503,8 @@
           },
           "monitors": {
             "type": "object",
-            "properties": {
-              "change": {
-                "type": "number",
-                "format": "float"
-              },
-              "color": {
-                "type": "string"
-              },
-              "image": {
-                "type": "string",
-                "format": "uri"
-              },
-              "last_update": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "percent": {
-                "type": "number",
-                "format": "float"
-              },
-              "price": {
-                "type": "number",
-                "format": "float"
-              },
-              "price_old": {
-                "type": "number",
-                "format": "float"
-              },
-              "symbol": {
-                "type": "string"
-              },
-              "title": {
-                "type": "string"
-              }
-          }
-          }
-        },
-        "example": {
-          "datetime": {
-            "date": "2024-01-01",
-            "time": "12:00:00"
-          },
-          "monitors": {
-            "monitor1": {
-              "change": 1.23,
-              "color": "green",
-              "image": "https://example.com/image.png",
-              "last_update": "2024-01-01T12:00:00Z",
-              "percent": 0.5,
-              "price": 100.0,
-              "price_old": 99.0,
-              "symbol": "$",
-              "title": "Monitor 1"
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Monitor"
             }
           }
         }
@@ -510,23 +545,11 @@
           "title": {
             "type": "string"
           }
-        },
-        "example": {
-          "change": 1.23,
-          "color": "green",
-          "image": "https://example.com/image.png",
-          "last_update": "2024-01-01T12:00:00Z",
-          "percent": 0.5,
-          "price": 100.0,
-          "price_old": 99.0,
-          "symbol": "$",
-          "title": "Monitor 1"
         }
       },
       "Conversion": {
         "type": "number",
-        "format": "float",
-        "example": 123.45
+        "format": "float"
       },
       "MonitorDataChanges": {
         "type": "object",
@@ -539,10 +562,6 @@
             "type": "string",
             "format": "date-time"
           }
-        },
-        "example": {
-          "price": 100.0,
-          "last_update": "2024-01-01T12:00:00Z"
         }
       },
       "MonitorDataHistory": {
@@ -564,12 +583,6 @@
             "type": "string",
             "format": "date-time"
           }
-        },
-        "example": {
-          "price": 100.0,
-          "price_high": 100.0,
-          "price_low": 100.0,
-          "last_update": "2024-01-01T12:00:00Z"
         }
       },
       "History": {
@@ -585,15 +598,6 @@
               "$ref": "#/components/schemas/MonitorDataHistory"
             }
           }
-        },
-        "example": {
-          "datetime": "2024-01-01T12:00:00Z",
-          "history": [
-            {
-              "price": 100.0,
-              "last_update": "2024-01-01T12:00:00Z"
-            }
-          ]
         }
       },
       "Changes": {
@@ -603,21 +607,70 @@
             "type": "string",
             "format": "date-time"
           },
-          "daily": {
+          "changes": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/MonitorDataChanges"
             }
           }
-        },
-        "example": {
-          "datetime": "2024-01-01T12:00:00Z",
-          "daily": [
-            {
-              "price": 100.0,
-              "last_update": "2024-01-01T12:00:00Z"
+        }
+      },
+      "WebhookOK": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Webhook creado con éxito."
+          }
+        }
+      },
+      "WebhookDelete": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Webhook eliminado con éxito."
+          }
+        }
+      },
+      "WebhookGet": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "certificate_ssl": {
+              "type": "boolean",
+              "format": "boolean"
+            },
+            "token": {
+              "type": "string",
+              "format": "password"
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "monitors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "monitor_id": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              }
             }
-          ]
+          }
         }
       }
     }
