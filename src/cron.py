@@ -20,9 +20,13 @@ from .consts import (
 )
 from ._provider import Provider
 from .data.services.webhooks_db import (
-    get_all_monitor_webhook, 
+    get_all_monitor_webhook,
+    change_webhook_status, 
     delete_all_monitor_webhook,
-    get_all_webhooks
+    get_all_webhooks,
+    set_webhook_status,
+    is_intents_webhook_limit,
+    delete_webhook_status
 )
 from .data.schemas import MonitorSchema
 from .data.services.monitors_db import get_monitor_by_id as _get_monitor_by_id_
@@ -106,6 +110,8 @@ def send_webhooks() -> None:
     
     monitors_ids_save = {}
     for webhook in get_all_webhooks(session):
+        if not webhook.status:
+            continue
         data = []
 
         for m in webhook.monitors:
@@ -125,6 +131,14 @@ def send_webhooks() -> None:
             )
         except Exception as e:
             logger.error(f'Error al enviar el webhook: {str(e)}')
+
+            if not is_intents_webhook_limit(session, webhook.id):
+                set_webhook_status(session, webhook.id, False)
+            else:
+                change_webhook_status(session, webhook.id, False)
+                delete_webhook_status(session, webhook.id)
+                logger.info(f'Webhook desactivado por superar el límite de intentos: {webhook.url}')
+
     delete_all_monitor_webhook()
 
 def upload_backup_dropbox() -> None:
