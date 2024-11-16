@@ -132,6 +132,9 @@ Body:
 }
 ```
 
+> [!NOTE]
+> Una vez configurado el webhook, el servidor enviará una solicitud `POST` a la URL proporcionada cada vez que se produzca un cambio, despues de 3 intentos fallidos su estado pasará a `false`.
+
 ### `DELETE /api/user/del-webhook`
 
 Este endpoint permite eliminar un webhook configurado previamente.
