@@ -127,7 +127,7 @@ def send_webhooks() -> None:
             data.append(MonitorSchema().dump(monitor))
         try:
             asyncio.run(
-                _send_webhook_(webhook.url, webhook.token, webhook.certificate_ssl, json.dumps({'monitors': data}))
+                _send_webhook_(webhook.url, webhook.token, webhook.certificate_ssl, {'monitors': data})
             )
         except Exception as e:
             logger.error(f'Error al enviar el webhook: {str(e)}')
