@@ -345,7 +345,7 @@
       "post": {
         "tags": ["Webhook"],
         "summary": "Establecer webhook",
-        "description": "Establece un webhook para recibir notificaciones de actualizaciones de precios.",
+        "description": "Establece un webhook para recibir notificaciones de actualizaciones de precios. \n\n El `token_secret` es una clave secreta que se utilizará para verificar la autenticidad de las solicitudes entrantes. Y sera enviado en el header `Authorization` como `Bearer <token_secret>`.",
         "requestBody": {
           "required": true,
           "content": {
