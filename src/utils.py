@@ -6,7 +6,7 @@ from .consts import PROVIDERS, CURRENCIES
 async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] = {'message': 'Hello, World!'}) -> None:
     try:
         headers = {
-            'Authorization': token,
+            'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json',
             'X-Request-ID': str(uuid4())
         }
