@@ -243,6 +243,9 @@ paths:
                       page:
                         type: string
                         description: La página de la que se quiere obtener la información.
+                      currency:
+                        type: string
+                        description: La moneda en la que se expresarán los precios (dollar, euro).
                       monitor:
                         type: string
                         description: El monitor específico del que se quiere obtener la información.
