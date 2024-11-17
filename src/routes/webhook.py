@@ -46,6 +46,9 @@ def set_webhook():
         raise ValueError('La url debe tener un path')
     if parsed_url.hostname in ['localhost', '']:
         raise ValueError('La url no puede ser una dirección local')
+    
+    if token_secret.startswith('Bearer '):
+        token_secret = token_secret.replace('Bearer ', '')
 
     # Procesing webhook
     asyncio.run(_send_webhook_(url, token_secret, certificate_ssl)) # Send webhook to verify the url
