@@ -4,9 +4,9 @@ from datetime import datetime
 from sqlalchemy import func, distinct
 from sqlalchemy.orm import Session
 from ...exceptions import MissingKeyError, WebhookExistsError
-from ...utils import get_provider
+from ...utils import get_provider, get_currency
 from ...core import cache
-from ..models import User, Webhook, MonitorsWebhooks, Page, Monitor
+from ..models import User, Webhook, MonitorsWebhooks, Page, Currency, Monitor
 from ..schemas import WebhookSchema
 from .users_db import is_user_valid
 
@@ -30,16 +30,22 @@ def create_webhook(session: Session, token_user: str, **kwargs) -> None:
         session.add(new_webhook)
 
         for monitor_data in kwargs.get('monitors'):
-            if 'page' not in monitor_data or 'monitor' not in monitor_data:
-                raise MissingKeyError('Cada objeto debe contener page y monitor.')
-            
+            if 'page' not in monitor_data or 'currency' not in monitor_data or'monitor' not in monitor_data:
+                raise MissingKeyError('Cada objeto debe contener page, currency y monitor')
+
             provider_name = get_provider(monitor_data['page'])
             page = session.query(Page).filter(func.lower(Page.name) == func.lower(provider_name)).first()
             if not page:
                 raise ValueError('Pagina no encontrada')
             
+            currency_name = get_currency(monitor_data['currency'])
+            currency = session.query(Currency).filter(func.lower(Currency.symbol) == func.lower(currency_name)).first()
+            if not currency:
+                raise ValueError('Moneda no encontrada')
+            
             monitor = session.query(Monitor).filter(
-                Monitor.page_id == page.id, 
+                Monitor.page_id == page.id,
+                Monitor.currency_id == currency.id, 
                 func.lower(Monitor.key) == func.lower(monitor_data['monitor'])).first()
             if not monitor:
                 raise ValueError('Monitor no encontrado')
