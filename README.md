@@ -117,6 +117,8 @@ Este endpoint permite configurar un webhook para recibir notificaciones en tiemp
 Header:
 - `Authorization`: El token de autorización correspondiente al usuario.
 
+El `token_secret` es una clave secreta que se utilizará para verificar la autenticidad de las solicitudes entrantes. Y sera enviado en el header `Authorization` como `Bearer <token_secret>`.
+
 Body:
 ```json
 {
