@@ -126,6 +126,7 @@ Body:
   "monitors": [
     {
       "page": "string",
+      "currency": "string", // dollar or euro
       "monitor": "string"
     }
   ]
