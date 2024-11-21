@@ -73,6 +73,10 @@ def get_webhook(session: Session, token_user: str) -> dict:
     
     return WebhookSchema().dump(webhook, many=True)
 
+def get_webhook_by_model(session: Session, token_user: str) -> Webhook:
+    user = session.query(User).filter(User.token == token_user).first()
+    return session.query(Webhook).filter(Webhook.user_id == user.id).first()
+
 def change_webhook_status(session: Session, webhook_id: int, status: bool) -> None:
     webhook = session.query(Webhook).filter(Webhook.id == webhook_id).first()
     if not webhook:
