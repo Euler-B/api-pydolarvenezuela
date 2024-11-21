@@ -7,7 +7,8 @@ from ..decorators import token_required, handle_exceptions
 from ..data.services.webhooks_db import (
     create_webhook as _create_webhook_,
     delete_webhook as _delete_webhook_,
-    get_webhook as _get_webhook_
+    get_webhook as _get_webhook_,
+    raise_webhook_exists_error
 )
 from ..utils import send_webhook as _send_webhook_
 
@@ -49,6 +50,8 @@ def set_webhook():
     
     if token_secret.startswith('Bearer '):
         token_secret = token_secret.replace('Bearer ', '')
+
+    raise_webhook_exists_error(session, token_user)
 
     # Procesing webhook
     asyncio.run(_send_webhook_(url, token_secret, certificate_ssl)) # Send webhook to verify the url
