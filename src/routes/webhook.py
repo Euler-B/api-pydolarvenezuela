@@ -10,7 +10,7 @@ from ..data.services.webhooks_db import (
     get_webhook as _get_webhook_,
     raise_webhook_exists_error
 )
-from ..utils import send_webhook as _send_webhook_
+from ..utils import send_webhook as _send_webhook_, send_webhooks
 
 route = Blueprint('webhook', __name__)
 session = sessionmaker(bind=engine)()
@@ -80,3 +80,12 @@ def get_webhook():
 
     webhook = _get_webhook_(session, token_user)
     return jsonify(webhook), 200
+
+@route.post('/test-webhook')
+@token_required
+@handle_exceptions
+def test_webhook():
+    token_user = request.headers.get('Authorization')
+
+    send_webhooks(True, token_user=token_user)
+    return jsonify({"message": "Webhook enviado con éxito"}), 200
