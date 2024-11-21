@@ -3,7 +3,6 @@ from datetime import datetime
 from sqlalchemy import func, distinct
 from sqlalchemy.orm import Session
 from ...exceptions import MissingKeyError, WebhookExistsError
-from ...utils import get_provider, get_currency
 from ...core import cache
 from ..models import User, Webhook, MonitorsWebhooks, Page, Currency, Monitor
 from ..schemas import WebhookSchema
@@ -17,7 +16,8 @@ def raise_webhook_exists_error(session: Session, token_user: str) -> None:
     if session.query(Webhook).filter(Webhook.user_id == user.id).count() > 0:
         raise WebhookExistsError('El webhook ya existe')
     
-def create_webhook(session: Session, token_user: str, **kwargs) -> None:    
+def create_webhook(session: Session, token_user: str, **kwargs) -> None:
+    from ...utils import get_provider, get_currency    
     user = session.query(User).filter(User.token == token_user).first()
 
     try:
