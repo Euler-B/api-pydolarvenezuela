@@ -11,12 +11,10 @@ from .data.services.webhooks_db import (
     change_webhook_status, 
     delete_all_monitor_webhook,
     get_all_webhooks,
-    get_webhook_by_model as get_webhook,
     set_webhook_status,
     is_intents_webhook_limit,
     delete_webhook_status
 )
-from .data.services.monitors_db import get_monitor_by_id as _get_monitor_by_id_
 from .data.schemas import MonitorSchema
 
 async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] = {'message': 'Hello, World!'}) -> None:
@@ -39,6 +37,9 @@ def send_webhooks(test: bool = False, **kwargs) -> None:
     """
     Envía los webhooks a los monitores.
     """
+    from .data.services.monitors_db import get_monitor_by_id as _get_monitor_by_id_
+    from .data.services.webhooks_db import get_webhook_by_model as get_webhook
+
     session = sessionmaker(bind=engine)()
 
     def send_webhook_test() -> None:
