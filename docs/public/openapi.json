@@ -446,6 +446,36 @@
         }
       }
     },
+    "/api/user/test-webhook": {
+      "post": {
+        "tags": ["Webhook"],
+        "summary": "Probar webhook",
+        "description": "Prueba un webhook para verificar que está funcionando correctamente.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook enviado con éxito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookTest"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error."
+          },
+          "500": {
+            "description": "Error en el servidor."
+          }
+        }
+      }
+    },
     "/api/user/get-webhook": {
       "get": {
         "tags": ["Webhook"],
@@ -654,6 +684,15 @@
           "message": {
             "type": "string",
             "description": "Webhook creado con éxito."
+          }
+        }
+      },
+      "WebhookTest": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Webhook enviado con éxito."
           }
         }
       },
