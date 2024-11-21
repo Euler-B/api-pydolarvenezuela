@@ -82,8 +82,8 @@ def send_webhooks(test: bool = False, **kwargs) -> None:
                 continue
 
             monitor = _get_monitor_by_id_(session, m.monitor_id)
-            monitors_ids_save[m.monitor_id] = monitor
-            data.append(MonitorSchema().dump(monitor))
+            monitors_ids_save[m.monitor_id] = MonitorSchema().dump(monitor)
+            data.append(monitors_ids_save[m.monitor_id])
         try:
             asyncio.run(
                 send_webhook(webhook.url, webhook.token, webhook.certificate_ssl, {'monitors': data})
