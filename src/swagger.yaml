@@ -282,6 +282,25 @@ paths:
         500:
           description: Error en el servidor.
 
+  /api/user/test-webhook:
+    post:
+      tags:
+        - Webhook
+      summary: Prueba un webhook para verificar si está funcionando correctamente.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Webhooks obtenidos correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookTest'
+        400:
+          description: Error.
+        500:
+          description: Error en el servidor.
+
   /api/user/get-webhook:
     get:
       tags:
@@ -405,6 +424,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MonitorDataChanges'
+    
+    WebhookTest:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Webhook enviado con éxito
     
     WebhookOK:
       type: object
