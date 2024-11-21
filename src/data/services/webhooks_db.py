@@ -1,4 +1,3 @@
-import logging
 from typing import Optional, List
 from datetime import datetime
 from sqlalchemy import func, distinct
@@ -10,14 +9,16 @@ from ..models import User, Webhook, MonitorsWebhooks, Page, Currency, Monitor
 from ..schemas import WebhookSchema
 from .users_db import is_user_valid
 
-def create_webhook(session: Session, token_user: str, **kwargs) -> None:    
-    if not is_user_valid(session, token_user):
-        raise Exception('User not found')
-    
+def raise_webhook_exists_error(session: Session, token_user: str) -> None:
     user = session.query(User).filter(User.token == token_user).first()
-    
+    if not user:
+        raise Exception('Usuario no encontrado')
+
     if session.query(Webhook).filter(Webhook.user_id == user.id).count() > 0:
-        raise WebhookExistsError('Webhook already exists')
+        raise WebhookExistsError('El webhook ya existe')
+    
+def create_webhook(session: Session, token_user: str, **kwargs) -> None:    
+    user = session.query(User).filter(User.token == token_user).first()
 
     try:
         new_webhook = Webhook(
