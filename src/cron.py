@@ -1,5 +1,4 @@
 import json
-import asyncio
 from datetime import datetime
 from pyDolarVenezuela.pages import (
     AlCambio, 
@@ -19,18 +18,7 @@ from .consts import (
     UPDATE_SCHEDULE
 )
 from ._provider import Provider
-from .data.services.webhooks_db import (
-    get_all_monitor_webhook,
-    change_webhook_status, 
-    delete_all_monitor_webhook,
-    get_all_webhooks,
-    set_webhook_status,
-    is_intents_webhook_limit,
-    delete_webhook_status
-)
-from .data.schemas import MonitorSchema
-from .data.services.monitors_db import get_monitor_by_id as _get_monitor_by_id_
-from .utils import send_webhook as _send_webhook_
+from .utils import send_webhooks
 from .backup import backup
 from .storage.dropbox import DropboxStorage
 from .storage.telegram import TelegramStorage
@@ -94,52 +82,6 @@ def job() -> None:
                 update_data(name, monitor)
                 break
     send_webhooks()
-
-def send_webhooks() -> None:
-    """
-    Envía los webhooks a los monitores.
-    """
-    from sqlalchemy.orm import sessionmaker
-    from .data.engine import engine
-
-    session = sessionmaker(bind=engine)()
-
-    monitor_webhooks = get_all_monitor_webhook()
-    if not monitor_webhooks:
-        return
-    
-    monitors_ids_save = {}
-    for webhook in get_all_webhooks(session):
-        if not webhook.status:
-            continue
-        data = []
-
-        for m in webhook.monitors:
-            if m.monitor_id not in monitor_webhooks:
-                continue
-            
-            if m.monitor_id in monitors_ids_save:
-                data.append(monitors_ids_save[m.monitor_id])
-                continue
-
-            monitor = _get_monitor_by_id_(session, m.monitor_id)
-            monitors_ids_save[m.monitor_id] = monitor
-            data.append(MonitorSchema().dump(monitor))
-        try:
-            asyncio.run(
-                _send_webhook_(webhook.url, webhook.token, webhook.certificate_ssl, {'monitors': data})
-            )
-        except Exception as e:
-            logger.error(f'Error al enviar el webhook: {str(e)}')
-
-            if not is_intents_webhook_limit(webhook.id):
-                set_webhook_status(webhook.id, 1)
-            else:
-                change_webhook_status(session, webhook.id, False)
-                delete_webhook_status(webhook.id)
-                logger.info(f'Webhook desactivado por superar el límite de intentos: {webhook.url}')
-
-    delete_all_monitor_webhook()
 
 def upload_backup_dropbox() -> None:
     """
