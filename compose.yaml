@@ -12,6 +12,12 @@ services:
       - app-network
     volumes:
       - .:/app
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+
   redis:
     image: "redis:alpine"
     container_name: redis
@@ -20,6 +26,7 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - app-network
+      
   db:
     image: "postgres:16-alpine3.20"
     restart: always
