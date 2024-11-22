@@ -11,6 +11,9 @@ backup_dir = os.path.join(os.path.dirname(__file__), 'tmp')
 os.makedirs(backup_dir, exist_ok=True)
 
 def backup() -> Dict[str, Any]:
+    """
+    Realiza un backup de la base de datos.
+    """
     if os.listdir(backup_dir):
         for file in os.listdir(backup_dir):
             if file.startswith('backup_'):
