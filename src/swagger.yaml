@@ -10,14 +10,16 @@ info:
 servers:
   - url: https://pydolarve.org/
 tags:
-  - name: GET
+  - name: Dolar
+    description: Endpoints para obtener información de monitores de precios de dólar.
   - name: Webhook
+    description: Endpoints para establecer, eliminar y probar webhooks.
 
 paths:
   /api/v1/{currency}:
     get:
       tags:
-        - GET
+        - Dolar
       summary: Obtiene información de un monitor específico o de todos los monitores en una página.
       parameters:
         - name: currency
@@ -63,7 +65,7 @@ paths:
   /api/v1/{currency}/conversion:
     get:
       tags:
-        - GET
+        - Dolar
       summary: Convierte un valor en bolívares a su equivalente a estas monedas extranjeras y viceversa.
       parameters:
         - name: currency
@@ -110,7 +112,7 @@ paths:
   /api/v1/{currency}/history:
     get:
       tags:
-        - GET
+        - Dolar
       summary: Obtiene el historial de precios de un monitor específico en una página.
       parameters:
         - name: currency
@@ -166,7 +168,7 @@ paths:
   /api/v1/{currency}/changes:
     get:
       tags:
-        - GET
+        - Dolar
       summary: Obtiene actualizaciones de precios realizadas en un día especifico de un monitor en una página.
       parameters:
         - name: currency
