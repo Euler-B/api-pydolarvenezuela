@@ -1,7 +1,7 @@
 import asyncio
 from urllib.parse import urlparse
 from flask import Blueprint, request, jsonify
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session
 from ..data.engine import engine
 from ..decorators import token_required, handle_exceptions
 from ..data.services.webhooks_db import (
@@ -13,7 +13,6 @@ from ..data.services.webhooks_db import (
 from ..utils import send_webhook as _send_webhook_, send_webhooks
 
 route = Blueprint('webhook', __name__)
-session = sessionmaker(bind=engine)()
 
 @route.post('/set-webhook')
 @token_required
@@ -51,16 +50,17 @@ def set_webhook():
     if token_secret.startswith('Bearer '):
         token_secret = token_secret.replace('Bearer ', '')
 
-    raise_webhook_exists_error(session, token_user)
+    with Session(engine) as session:
+        raise_webhook_exists_error(session, token_user) # Check if webhook exists
 
-    # Procesing webhook
-    asyncio.run(_send_webhook_(url, token_secret, certificate_ssl)) # Send webhook to verify the url
-    _create_webhook_(session, token_user, 
-                     url=url, 
-                     token=token_secret, 
-                     certificate_ssl=certificate_ssl, 
-                     monitors=monitors)
-    
+        # Procesing webhook
+        asyncio.run(_send_webhook_(url, token_secret, certificate_ssl)) # Send webhook to verify the url
+        _create_webhook_(session, token_user, 
+                        url=url, 
+                        token=token_secret, 
+                        certificate_ssl=certificate_ssl, 
+                        monitors=monitors)
+        
     return jsonify({"message": "Webhook creado con éxito"}), 201
     
 @route.delete('/del-webhook')
@@ -69,7 +69,9 @@ def set_webhook():
 def del_webhook():
     token_user = request.headers.get('Authorization')
 
-    _delete_webhook_(session, token_user)
+    with Session(engine) as session:
+        _delete_webhook_(session, token_user)
+
     return jsonify({"message": "Webhook eliminado con éxito"}), 200
 
 @route.get('/get-webhook')
@@ -78,7 +80,8 @@ def del_webhook():
 def get_webhook():
     token_user = request.headers.get('Authorization')
 
-    webhook = _get_webhook_(session, token_user)
+    with Session(engine) as session:
+        webhook = _get_webhook_(session, token_user)
     return jsonify(webhook), 200
 
 @route.post('/test-webhook')
