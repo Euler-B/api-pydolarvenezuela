@@ -20,6 +20,9 @@ from .data.services.monitors_db import get_monitor_by_id as _get_monitor_by_id_
 from .data.schemas import MonitorSchema
 
 async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] = {'message': 'Hello, World!'}) -> None:
+    """
+    Envía un webhook a la url especificada.
+    """
     try:
         headers = {
             'Authorization': f'Bearer {token}',
@@ -100,10 +103,16 @@ def send_webhooks(test: bool = False, **kwargs) -> None:
         delete_all_monitor_webhook()
 
 def get_provider(provider: str) -> str:
+    """
+    Obtiene el proveedor de la lista de proveedores.
+    """
     for key, value in PROVIDERS.items():
         if provider.lower() in value.lower():
             return key
     return provider
         
 def get_currency(currency: str) -> str:
+    """
+    Obtiene la moneda de la lista de monedas.
+    """
     return CURRENCIES.get(currency.lower())
