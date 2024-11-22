@@ -5,7 +5,7 @@ flask_marshmallow==1.2.1
 flasgger==0.9.7.1
 pydolarvenezuela==2.0.3
 cachetools==5.5.0
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.10
 python-dotenv==1.0.1
 redis==5.0.7
 sqlalchemy==2.0.31
