@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, send_file
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session
 from ..decorators import token_required_admin, handle_exceptions
 from ..data.engine import engine
 from ..data.services.users_db import (
@@ -14,7 +14,6 @@ from ..data.services.monitors_db import (
 )
 
 route   = Blueprint('admin', __name__)
-session = sessionmaker(bind=engine)()
 
 # Users 
 
@@ -27,14 +26,16 @@ def create_user():
     if not name:
         raise ValueError('Falta el nombre del usuario.')
     
-    token = _create_user_(session, name)
+    with Session(engine) as session:
+        token = _create_user_(session, name)
     return jsonify({"message": "Usuario creado exitosamente.", "token": token}), 200
 
 @route.get('/get-users')
 @token_required_admin
 @handle_exceptions
 def get_users_route():
-    users = _get_users_(session)
+    with Session(engine) as session:
+        users = _get_users_(session)
     return jsonify(users), 200
 
 @route.put('/modificate-user')
@@ -47,7 +48,8 @@ def modificate_user():
     if not all([id_user, is_premium]):
         raise ValueError('Falta el id del usuario o el estado de premium.')
     
-    _modificate_user_(session, id_user, is_premium)
+    with Session(engine) as session:
+        _modificate_user_(session, id_user, is_premium)
     return jsonify({"message": "Usuario modificado exitosamente."}), 200
 
 @route.delete('/delete-user')
@@ -59,7 +61,8 @@ def delete_user():
     if not id_user:
         raise ValueError('Falta el id del usuario.')
     
-    _delete_user_(session, id_user)
+    with Session(engine) as session:
+        _delete_user_(session, id_user)
     return jsonify({"message": "Usuario eliminado exitosamente."}), 200
     
 # Monitors
@@ -87,7 +90,8 @@ def modificate_monitor():
     if not form:
         raise ValueError('No se proporcionaron los datos a modificar.')
 
-    _modificate_monitor_(session, page, monitor, form)
+    with Session(engine) as session:
+        _modificate_monitor_(session, page, monitor, form)
     return jsonify({"message": "Monitor modificado exitosamente."}), 200
 
 @route.delete('/delete-page')
@@ -98,7 +102,8 @@ def delete_page():
     if not name:
         raise ValueError('Falta el nombre de la página.')
     
-    _delete_page_(session, name)
+    with Session(engine) as session:
+        _delete_page_(session, name)
     return jsonify({"message": "Página eliminada exitosamente."}), 200
 
 # Backup
