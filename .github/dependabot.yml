@@ -4,7 +4,3 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "*"
-    allow:
-      - dependency-name: "pydolarvenezuela"
