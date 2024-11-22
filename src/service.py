@@ -3,7 +3,7 @@ import re
 from typing import Union, Optional, Literal, Dict, List, Any
 from datetime import datetime
 from pyDolarVenezuela import getdate, currency_converter
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session
 from .data.engine import engine
 from .data.schemas import HistoryPriceSchema, DailyChangeSchema, MonitorSchema
 from .data.services.monitors_db import (
@@ -15,8 +15,6 @@ from .data.services.monitors_db import (
 from .cron import monitors
 from .core import cache
 from .consts import PROVIDERS, CURRENCIES
-
-session = sessionmaker(bind=engine)()
 
 def _get_cache_key(*args) -> str:
     """
@@ -119,10 +117,12 @@ def get_page_or_monitor(currency: str, page: Optional[str], monitor_code: Option
     return result
 
 def fetch_monitor_data(page_id: int, currency_id: int, monitor_code: str, start_date: str, end_date: str, data_type: Literal['daily', 'history']) -> List[Dict[str, Any]]:
-    if data_type == 'history':
-        return _get_range_history_prices_(session, page_id, currency_id, monitor_code, start_date, end_date)
-    elif data_type == 'daily':
-        return _get_daily_changes_(session, page_id, currency_id, monitor_code, start_date)
+    with Session(engine) as session:
+        if data_type == 'history':
+            return _get_range_history_prices_(session, page_id, currency_id, monitor_code, start_date, end_date)
+        elif data_type == 'daily':
+            return _get_daily_changes_(session, page_id, currency_id, monitor_code, start_date)
+        return []
 
 def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: str, end_date: str, data_type: Literal['daily', 'history'], format_date: Literal['timestamp', 'iso', 'default']) -> List[Dict[str, Any]]:
     """
@@ -136,21 +136,22 @@ def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: st
             currency = CURRENCIES.get(currency, currency)  
 
             if name_page == page and monitor.currency == currency:
-                _p, page_id = _is_exist_page_(session, monitor.provider.name)
-                _c, currency_id = _is_exist_currency_(session, monitor.currency)
-                
-                if re.match(r'\d{2}-\d{2}-\d{4}', start_date) is None or re.match(r'\d{2}-\d{2}-\d{4}', end_date) is None:
-                    raise ValueError('El formato de la fecha debe ser: dd-mm-yyyy.')
+                with Session(engine) as session:
+                    _p, page_id = _is_exist_page_(session, monitor.provider.name)
+                    _c, currency_id = _is_exist_currency_(session, monitor.currency)
+                    
+                    if re.match(r'\d{2}-\d{2}-\d{4}', start_date) is None or re.match(r'\d{2}-\d{2}-\d{4}', end_date) is None:
+                        raise ValueError('El formato de la fecha debe ser: dd-mm-yyyy.')
 
-                start_date  = datetime.strptime(start_date, "%d-%m-%Y").date()
-                end_date    = datetime.strptime(end_date, "%d-%m-%Y").date()
-                results = fetch_monitor_data(page_id, currency_id, monitor_code, start_date, end_date, data_type)  
-                
-                if not results:
-                    raise ValueError('No se encontraron datos para el monitor solicitado.')
-                
-                cache.set(key, json.dumps(results, default=str), ex=1800)
-                break
+                    start_date  = datetime.strptime(start_date, "%d-%m-%Y").date()
+                    end_date    = datetime.strptime(end_date, "%d-%m-%Y").date()
+                    results = fetch_monitor_data(page_id, currency_id, monitor_code, start_date, end_date, data_type)  
+                    
+                    if not results:
+                        raise ValueError('No se encontraron datos para el monitor solicitado.')
+                    
+                    cache.set(key, json.dumps(results, default=str), ex=1800)
+                    break
         else:
             raise KeyError('No se encontró el monitor al que quieres acceder.')
     
