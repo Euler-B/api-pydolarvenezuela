@@ -1,16 +1,16 @@
-﻿flask==3.0.3
-flask_cors==4.0.0
+﻿flask==3.1.0
+flask_cors==5.0.0
 Flask-Limiter==3.8.0
 flask_marshmallow==1.2.1
 flasgger==0.9.7.1
 pydolarvenezuela==2.0.3
-cachetools==5.3.3
-psycopg2-binary==2.9.9
+cachetools==5.5.0
+psycopg2-binary==2.9.10
 python-dotenv==1.0.1
 redis==5.0.7
 sqlalchemy==2.0.31
 apscheduler==3.10.4
 dropbox==12.0.2
-pytelegrambotapi==4.23.0
+pytelegrambotapi==4.24.0
 dataclasses>=0.6; python_version < "3.7"
 httpx==0.27.2
