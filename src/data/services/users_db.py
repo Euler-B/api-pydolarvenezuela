@@ -4,8 +4,6 @@ from sqlalchemy.orm import Session
 from ..models import User
 from ..schemas import UserSchema
 
-user_schema = UserSchema()
-
 def is_user_valid(session: Session, token: str) -> bool:
     user = session.query(User).filter(User.token == token).first()
     if not user:
@@ -31,4 +29,4 @@ def delete_user(session: Session, id: int) -> None:
 
 def get_users(session: Session) -> list:
     models = session.query(User).all()
-    return user_schema.dump(models, many=True)
+    return UserSchema().dump(models, many=True)
