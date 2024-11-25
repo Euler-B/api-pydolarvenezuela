@@ -47,7 +47,13 @@ class Provider:
                 break
 
             if not _is_exist_monitor_(self.session, self.page_id, self.currency_id, monitor.key):
-                _create_monitor_(self.session, self.provider.name, monitor.title, monitor.price, monitor.last_update)
+                _create_monitor_(self.session, self.page_id, self.currency_id,
+                                 key=monitor.key, 
+                                 title=monitor.title, 
+                                 price=monitor.price, 
+                                 last_update=monitor.last_update, 
+                                 image=monitor.image
+                                )
             else:
                 old_monitor = _get_monitor_(self.session, self.page_id, self.currency_id, monitor.key)
                 
