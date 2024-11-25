@@ -10,7 +10,8 @@ class BaseSchema(ma.Schema):
         super().__init__(*args, **kwargs)
     
     def _adjust_timezone_not_object(self, data):
-        if 'last_update' in data and data['last_update']:
+        last_update_str = data.get('last_update')
+        if last_update_str:
             last_update = datetime.fromisoformat(data['last_update']).astimezone(TIME_ZONE)
             if self.custom_format == 'iso':
                 data['last_update'] = last_update.isoformat()
@@ -24,6 +25,10 @@ class BaseSchema(ma.Schema):
         if hasattr(data, 'last_update') and data.last_update:
             last_update = data.last_update.astimezone(TIME_ZONE)
             data.last_update = last_update.isoformat()
+        
+        if hasattr(data, 'created_at') and data.created_at:
+            created_at = data.created_at.astimezone(TIME_ZONE)
+            data.created_at = created_at.isoformat()
         return data
 
     @pre_dump
@@ -32,15 +37,7 @@ class BaseSchema(ma.Schema):
             return self._adjust_timezone_not_object(data)
         return self._adjust_timezone_object(data)
 
-class UserSchema(ma.Schema):
-    created_at = fields.DateTime(format='%d/%m/%Y, %I:%M %p')
-
-    @pre_dump
-    def adjust_timezone(self, data, **kwargs):
-        if data.created_at:
-            data.created_at = data.created_at.astimezone(TIME_ZONE)
-        return data
-
+class UserSchema(BaseSchema):
     class Meta:
         fields = ("id", "name", "token", "is_premium", "created_at")
 
@@ -68,10 +65,8 @@ class MonitorsWebhooksSchema(ma.Schema):
     class Meta:
         fields = ("monitor_id", )
 
-class WebhookSchema(ma.Schema):
+class WebhookSchema(BaseSchema):
     monitors = fields.Nested(MonitorsWebhooksSchema, many=True)
-    created_at = fields.String()
-    
     class Meta:
         fields = ("id", "url", "token", "certificate_ssl", "status", "monitors", "created_at")
 
