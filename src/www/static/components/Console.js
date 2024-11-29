@@ -24,11 +24,11 @@ export default {
     <div class="bg-black text-white p-4 rounded-lg mt-4">
         <div class="mb-2">
             <strong>Solicitud:</strong>
-            <pre class="bg-gray-800 p-2 rounded">{{ request }}</pre>
+            <pre class="bg-gray-800 p-2 rounded whitespace-pre-wrap text-sm sm:text-base break-all sm:break-normal">{{ request }}</pre>
         </div>
         <div>
             <strong>Respuesta:</strong>
-            <pre class="bg-gray-800 p-2 rounded whitespace-pre-wrap text-left text-sm">{{ response }}</pre>
+            <pre class="bg-gray-800 p-2 rounded whitespace-pre-wrap text-left text-sm sm:text-base break-all sm:break-normal">{{ response }}</pre>
         </div>
     </div>
   `
