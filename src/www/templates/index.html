@@ -27,12 +27,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <script>
-        function detectSystemTheme() {
-            const colorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            document.body.classList.add(`theme-${colorScheme}`);
-        }(detectSystemTheme());
-    </script>
     <div id="app"></div>
     <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
