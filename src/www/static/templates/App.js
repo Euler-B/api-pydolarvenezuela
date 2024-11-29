@@ -7,8 +7,8 @@ export default {
     },
     template: `
         <div>
-        <HeaderComponent />
-        <router-view />
+            <HeaderComponent />
+            <router-view />
         </div>
     `
 }
