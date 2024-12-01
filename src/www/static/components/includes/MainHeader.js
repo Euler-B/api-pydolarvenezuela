@@ -7,7 +7,6 @@ export default {
         const menuOpen = Vue.ref(false);
         const setStars = async () => {
             const starsValue = await getAmountStars();
-            stars.value = starsValue;
             localStorage.setItem('stars', `${starsValue};${new Date().getTime()}`);
         };
 
@@ -17,12 +16,12 @@ export default {
             const [starsValue, date] = localStorage.getItem('stars').split(';');
             if (new Date().getTime() - date < 86400000) {
                 setStars();
-            } else {
-                stars.value = starsValue;
             }
         } else {
             setStars();
         }
+
+        stars.value = localStorage.getItem('stars').split(';')[0];
 
         return { stars, menuOpen, toggleMenu };
   },
