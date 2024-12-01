@@ -8,20 +8,26 @@ export default {
         const setStars = async () => {
             const starsValue = await getAmountStars();
             localStorage.setItem('stars', `${starsValue};${new Date().getTime()}`);
+            
+            return starsValue;
         };
 
         const toggleMenu = () => { menuOpen.value = !menuOpen.value; };
 
-        if (localStorage.getItem('stars')) {
-            const [starsValue, date] = localStorage.getItem('stars').split(';');
-            if (new Date().getTime() - date < 86400000) {
-                setStars();
+        const inicialize = async () => {
+            if (localStorage.getItem('stars')) {
+                const [starsValue, date] = localStorage.getItem('stars').split(';');
+                if (new Date().getTime() - date < 86400000) {
+                    stars.value = starsValue;
+                } else {
+                    stars.value = await setStars();
+                }
+            } else {
+                stars.value = await setStars();
             }
-        } else {
-            setStars();
-        }
+        };
 
-        stars.value = localStorage.getItem('stars').split(';')[0];
+        inicialize();
 
         return { stars, menuOpen, toggleMenu };
   },
