@@ -6,16 +6,21 @@ export default {
         const request = Vue.ref('GET https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd');
         const response = Vue.ref('');
 
+        const setDollarValue = async () => {
+            const dollarValue = await getDollarValue();
+            response.value = JSON.stringify(dollarValue, null, 2);
+            localStorage.setItem('dollar', `${response.value};${new Date().getTime()}`);
+        };
+
         if (localStorage.getItem('dollar')) {
             const [dollarValue, date] = localStorage.getItem('dollar').split(';');
             if (new Date().getTime() - date < 1800000) {
+                setDollarValue();
+            } else {
                 response.value = dollarValue;
             }
         } else {
-            getDollarValue().then(dollarValue => {
-            response.value = JSON.stringify(dollarValue, null, 2);
-            localStorage.setItem('dollar', `${response.value};${new Date().getTime()}`);
-        });
+            setDollarValue();
     }
 
         return { request, response };
