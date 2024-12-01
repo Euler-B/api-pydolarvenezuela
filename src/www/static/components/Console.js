@@ -8,7 +8,7 @@ export default {
 
         if (localStorage.getItem('dollar')) {
             const [dollarValue, date] = localStorage.getItem('dollar').split(';');
-            if (new Date().getTime() - date < 86400000) {
+            if (new Date().getTime() - date < 1800000) {
                 response.value = dollarValue;
             }
         } else {
