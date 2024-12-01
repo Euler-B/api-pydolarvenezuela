@@ -8,20 +8,20 @@ export default {
 
         const setDollarValue = async () => {
             const dollarValue = await getDollarValue();
-            response.value = JSON.stringify(dollarValue, null, 2);
-            localStorage.setItem('dollar', `${response.value};${new Date().getTime()}`);
+            localStorage.setItem('dollar', `${dollarValue};${new Date().getTime()}`);
         };
 
         if (localStorage.getItem('dollar')) {
             const [dollarValue, date] = localStorage.getItem('dollar').split(';');
             if (new Date().getTime() - date < 1800000) {
                 setDollarValue();
-            } else {
-                response.value = dollarValue;
             }
         } else {
             setDollarValue();
-    }
+        }
+
+        response.value = JSON.stringify(
+            localStorage.getItem('dollar').split(';')[0], null, 2);
 
         return { request, response };
   },
