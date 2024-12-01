@@ -162,8 +162,8 @@ curl -X GET "https://pydolarve.org/api/v1/dollar?page=bcv"
 
 ## Sponsors
 
-<a href="https://www.capasiete.com/" target="_blank" title="Capa7, proveedor de servicios web hosting, streaming y servidores, servicios rápidos, confiables, y seguros, 99.9% óptimo, soporte 24/7."><img src="https://github.com/fcoagz/api-pydolarvenezuela/blob/main/assets/sponsor/capasiete.jpg?raw=true" width="250" height="150"></a>
-<a href="https://criptomerkado.com/" target="_blank" title="Somos una plataforma para compra y venta de cripto monedas." ><img src="https://github.com/fcoagz/api-pydolarvenezuela/blob/main/assets/sponsor/criptomerkado.jpg?raw=true" width="250" height="150"></a>
+<a href="https://www.capasiete.com/" target="_blank" title="Capa7, proveedor de servicios web hosting, streaming y servidores, servicios rápidos, confiables, y seguros, 99.9% óptimo, soporte 24/7."><img src="https://github.com/fcoagz/api-pydolarvenezuela/blob/docker/assets/sponsor/capasiete.jpg?raw=true" width="250" height="150"></a>
+<a href="https://criptomerkado.com/" target="_blank" title="Somos una plataforma para compra y venta de cripto monedas." ><img src="https://github.com/fcoagz/api-pydolarvenezuela/blob/docker/assets/sponsor/criptomerkado.jpg?raw=true" width="250" height="150"></a>
 
 ## Individual Sponsors
 
