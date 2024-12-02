@@ -30,15 +30,8 @@ DROPBOX_FOLDER     = os.getenv('DROPBOX_FOLDER', 'backup')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-if all([DROPBOX_TOKEN, DROPBOX_APP_KEY, DROPBOX_APP_SECRET]):
-    DROPBOX_JOB = True
-else:
-    DROPBOX_JOB = False
-
-if all([TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]):
-    TELEGRAM_JOB = True
-else:
-    TELEGRAM_JOB = False
+DROPBOX_JOB = False if not all([DROPBOX_TOKEN, DROPBOX_APP_KEY, DROPBOX_APP_SECRET]) else True
+TELEGRAM_JOB = False if not all([TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]) else True
 
 PROVIDERS = {
     'Al Cambio': 'alcambio',
@@ -78,10 +71,5 @@ UPDATE_SCHEDULE = {
         ]
     }
 }
-
-if os.getenv('GETLOGS') == 'True':
-    GETLOGS = True
-else:
-    GETLOGS = False
 
 URL_DB  = f'{SQL_MOTOR}://{SQL_USER}:{SQL_PASSWORD}@{SQL_HOST}:{SQL_PORT}/{SQL_DB_NAME}'
