@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flasgger import Swagger
 
 from src.core import limiter
-from src.consts import TIMEOUT, GETLOGS, DROPBOX_JOB, TELEGRAM_JOB
+from src.consts import TIMEOUT, DROPBOX_JOB, TELEGRAM_JOB
 from src import cron
 from src.routes import index, monitors, admin, webhook
 from src.exceptions import (
@@ -18,9 +18,6 @@ from src.exceptions import (
     gateway_timeout,
     too_many_requests
 )
-
-if GETLOGS:
-    logging.basicConfig(filename='logs.log', level=logging.INFO)
 
 # scheduler
 scheduler = BackgroundScheduler(daemon=True)
