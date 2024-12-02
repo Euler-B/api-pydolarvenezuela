@@ -46,7 +46,7 @@ def send_webhooks(test: bool = False, **kwargs) -> None:
         with Session(engine) as session:               
             webhook = get_webhook(session, kwargs.get('token_user'))
             if not webhook:
-                return
+                raise ValueError('Webhook no encontrado')
             
             data = []
             for m in webhook.monitors:
