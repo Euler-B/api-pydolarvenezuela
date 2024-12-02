@@ -18,6 +18,7 @@ from .data.services.webhooks_db import (
 )
 from .data.services.monitors_db import get_monitor_by_id as _get_monitor_by_id_
 from .data.schemas import MonitorSchema
+from .exceptions import HTTPException
 
 async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] = {'message': 'Hello, World!'}) -> None:
     """
@@ -33,10 +34,8 @@ async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] 
         async with httpx.AsyncClient(verify=verify) as client:
             response = await client.post(url, headers=headers, json=data, timeout=5)
             response.raise_for_status()
-    except httpx.RequestError as e:
-        raise Exception(f'Error al enviar el webhook: {e}')
     except Exception as e:
-        raise e
+        raise HTTPException(response.status_code, str(e))
     
 def send_webhooks(test: bool = False, **kwargs) -> None:
     """
