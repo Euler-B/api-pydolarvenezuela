@@ -48,7 +48,8 @@
             "description": "La página de la que se quiere obtener la información.",
             "schema": {
               "type": "string",
-              "default": "criptodolar"
+              "example": "",
+              "enum": ["alcambio", "bcv", "criptodolar", "dolartoday", "enparalelovzla", "italcambio"]
             }
           },
           {
@@ -119,7 +120,9 @@
             "required": true,
             "description": "El tipo de conversión. Puede ser (VES, USD, EUR).",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "VES",
+              "enum": ["VES", "USD", "EUR"]
             }
           },
           {
@@ -137,7 +140,9 @@
             "required": true,
             "description": "La página de la que se quiere obtener la información.",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "bcv",
+              "enum": ["alcambio", "bcv", "criptodolar", "dolartoday", "enparalelovzla", "italcambio"]
             }
           },
           {
@@ -193,7 +198,9 @@
             "required": true,
             "description": "La página de la que se quiere obtener la información.",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "bcv",
+              "enum": ["alcambio", "bcv", "criptodolar", "dolartoday", "enparalelovzla", "italcambio"]
             }
           },
           {
@@ -283,7 +290,9 @@
             "required": true,
             "description": "La página de la que se quiere obtener la información.",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "bcv",
+              "enum": ["alcambio", "bcv", "criptodolar", "dolartoday", "enparalelovzla", "italcambio"]
             }
           },
           {
