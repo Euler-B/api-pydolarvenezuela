@@ -60,6 +60,8 @@ def handle_exceptions(f):
         try:
             return f(*args, **kwargs)
         except Exception as e:
+            if isinstance(e, HTTPException):
+                raise e
             error = exception_map.get(type(e), 500)
             raise HTTPException(error, str(e))
     return decorated
