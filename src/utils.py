@@ -39,7 +39,7 @@ async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] 
     
 def send_webhooks(test: bool = False, **kwargs) -> None:
     """
-    Envía los webhooks a los monitores.
+    Envía los webhooks a las urls especificadas.
     """
     def send_webhook_test() -> None:
         with Session(engine) as session:               
