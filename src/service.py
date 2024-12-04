@@ -140,8 +140,8 @@ def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: st
                     _p, page_id = _is_exist_page_(session, monitor.provider.name)
                     _c, currency_id = _is_exist_currency_(session, monitor.currency)
                     
-                    if re.match(r'\d{2}-\d{2}-\d{4}', start_date) is None or re.match(r'\d{2}-\d{2}-\d{4}', end_date) is None:
-                        raise ValueError('El formato de la fecha debe ser: dd-mm-yyyy.')
+                    for date in [start_date, end_date]:
+                        _validate_date(date)
 
                     start_date  = datetime.strptime(start_date, "%d-%m-%Y").date()
                     end_date    = datetime.strptime(end_date, "%d-%m-%Y").date()
