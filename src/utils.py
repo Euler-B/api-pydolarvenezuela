@@ -28,6 +28,7 @@ async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] 
         headers = {
             'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json',
+            'User-Agent': 'pyDolarVenezuela/1.0',
             'X-Request-ID': str(uuid4())
         }
 
