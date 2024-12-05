@@ -145,7 +145,7 @@ def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: st
     
     if cache.get(key) is None:
         for monitor in monitors:     
-            name_page = PROVIDERS.get(monitor.provider.name) 
+            name_page = PROVIDERS.get(monitor.provider.name)['id'] 
             currency = CURRENCIES.get(currency, currency)  
 
             if name_page == page and monitor.currency == currency:
