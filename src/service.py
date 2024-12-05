@@ -22,6 +22,20 @@ def _get_cache_key(*args) -> str:
     """
     return ':'.join(args)
 
+def _check_currency_provider(provider, currency):
+    """
+    Valida si la moneda y el proveedor existen.
+    """
+    if currency not in CURRENCIES.keys():
+        raise ValueError('No se encontró la moneda.')
+    
+    if provider not in [PROVIDERS[p]['id'] for p in PROVIDERS.keys()]:
+        raise ValueError('No se encontró el proveedor.')
+    
+    provider_currencies = [PROVIDERS[p]['currencies'] for p in PROVIDERS if PROVIDERS[p]['id'] == provider][0]
+    if CURRENCIES.get(currency) not in provider_currencies:
+        raise ValueError(f'El proveedor {provider} no tiene la moneda {currency}.')
+
 def _get_monitor(monitor_code: str, monitors_founds: Dict[str, Dict[str, Any]]) -> Union[Dict[str, Any], None]:
     """
     Obtiene un monitor en específico.
@@ -47,10 +61,9 @@ def get_all_monitors(currency: str, provider: str, format_date: Literal['timesta
     """
     if provider == 'default':
         return get_accurate_monitors(None, format_date)
-    if currency not in CURRENCIES.keys() or provider not in PROVIDERS.values():
-        raise ValueError(f'No se encontró {'la moneda' if currency not in CURRENCIES else 'el proveedor'}.')
-
-    key = f'{provider}:{CURRENCIES.get(currency)}'
+    _check_currency_provider(provider, currency)
+    
+    key = _get_cache_key(provider, CURRENCIES.get(currency))
     monitors = json.loads(cache.get(key)) if cache.get(key) else None
     monitors_dict = None
     
