@@ -51,7 +51,7 @@ def reload_monitors() -> None:
     Recarga los datos de los monitores y los guarda en caché.
     """
     for monitor in monitors:
-        name = PROVIDERS.get(monitor.provider.name)
+        name = PROVIDERS.get(monitor.provider.name)['id']
         logger.info(f'Recargando datos de "{monitor.provider.name}".')
         update_data(name, monitor)
     send_webhooks()
@@ -66,7 +66,7 @@ def job() -> None:
     _hour_ = dt.strftime('%H:%M')
 
     for monitor in monitors:
-        name = PROVIDERS.get(monitor.provider.name)
+        name = PROVIDERS.get(monitor.provider.name)['id']
         
         if name not in UPDATE_SCHEDULE.keys():
             logger.info(f'Actualizando datos de "{monitor.provider.name}".')
