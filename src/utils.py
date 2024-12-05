@@ -24,6 +24,8 @@ async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] 
     """
     Envía un webhook a la url especificada.
     """
+    response = None
+
     try:
         headers = {
             'Authorization': f'Bearer {token}',
@@ -36,7 +38,9 @@ async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] 
             response = await client.post(url, headers=headers, json=data, timeout=5)
             response.raise_for_status()
     except Exception as e:
-        raise HTTPException(response.status_code, str(e))
+        if response:
+            raise HTTPException(response.status_code, str(e))
+        raise HTTPException(500, str(e))
     
 def send_webhooks(test: bool = False, **kwargs) -> None:
     """
@@ -107,7 +111,7 @@ def get_provider(provider: str) -> str:
     Obtiene el proveedor de la lista de proveedores.
     """
     for key, value in PROVIDERS.items():
-        if provider.lower() in value.lower():
+        if provider.lower() in value['id'].lower():
             return key
     return provider
         
