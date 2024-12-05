@@ -34,12 +34,30 @@ DROPBOX_JOB = False if not all([DROPBOX_TOKEN, DROPBOX_APP_KEY, DROPBOX_APP_SECR
 TELEGRAM_JOB = False if not all([TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]) else True
 
 PROVIDERS = {
-    'Al Cambio': 'alcambio',
-    'Banco Central de Venezuela': 'bcv',
-    'Cripto Dolar': 'criptodolar',
-    'Dolar Today': 'dolartoday',
-    'EnParaleloVzla': 'enparalelovzla',
-    'Italcambio': 'italcambio'
+    'Al Cambio': {
+        'id': 'alcambio',
+        'currencies': ['usd']
+    },
+    'Banco Central de Venezuela': {
+        'id': 'bcv',
+        'currencies': ['usd']
+    },
+    'Cripto Dolar': {
+        'id': 'criptodolar',
+        'currencies': ['usd', 'eur']
+    },
+    'Dolar Today': {
+        'id': 'dolartoday',
+        'currencies': ['usd']
+    },
+    'EnParaleloVzla': {
+        'id': 'enparalelovzla',
+        'currencies': ['usd']
+    },
+    'Italcambio': {
+        'id': 'italcambio',
+        'currencies': ['usd']
+    }
 }
 CURRENCIES = {
     'dollar': 'usd',
