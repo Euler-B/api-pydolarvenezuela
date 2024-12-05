@@ -62,7 +62,7 @@ def send_webhooks(test: bool = False, **kwargs) -> None:
                     send_webhook(webhook.url, webhook.token, webhook.certificate_ssl, {'monitors': data})
                 )
             except Exception as e:
-                logger.error(f'Error al enviar el webhook: {str(e)}')
+                raise e
 
     if test:
         send_webhook_test()
