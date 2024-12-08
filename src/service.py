@@ -13,6 +13,7 @@ from .data.services.monitors_db import (
     get_daily_changes as _get_daily_changes_
 )
 from .utils.cache import CacheProvider, CacheHistoryMonitor
+from .utils.func_consts import get_provider, get_currency
 from .cron import monitors
 from .consts import PROVIDERS, CURRENCIES
 
@@ -139,29 +140,27 @@ def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: st
     cache = CacheHistoryMonitor(page, currency, monitor_code, start_date, end_date, data_type)
     
     if cache.get() is None:
-        for monitor in monitors:     
-            name_page = PROVIDERS.get(monitor.provider.name)['id'] 
-            currency = CURRENCIES.get(currency, currency)  
+        name_page = get_provider(page)
+        symbol    = get_currency(currency)
 
-            if name_page == page and monitor.currency == currency:
-                with Session(engine) as session:
-                    _p, page_id = _is_exist_page_(session, monitor.provider.name)
-                    _c, currency_id = _is_exist_currency_(session, monitor.currency)
-                    
-                    for date in [start_date, end_date]:
-                        _validate_date(date)
+        if not all([name_page, symbol]):
+            raise KeyError('No se encontró la página o la moneda que estás buscando.')
+        
+        with Session(engine) as session:
+            _p, page_id = _is_exist_page_(session, name_page)
+            _c, currency_id = _is_exist_currency_(session, symbol)
+            
+            for date in [start_date, end_date]:
+                _validate_date(date)
 
-                    start_date  = datetime.strptime(start_date, "%d-%m-%Y").date()
-                    end_date    = datetime.strptime(end_date, "%d-%m-%Y").date()
-                    results = fetch_monitor_data(page_id, currency_id, monitor_code, start_date, end_date, data_type)  
-                    
-                    if not results:
-                        raise ValueError('No se encontraron datos para el monitor solicitado.')
-                    
-                    cache.set(json.dumps(results, default=str))
-                    break
-        else:
-            raise KeyError('No se encontró el monitor al que quieres acceder.')
+            start_date  = datetime.strptime(start_date, "%d-%m-%Y").date()
+            end_date    = datetime.strptime(end_date, "%d-%m-%Y").date()
+            results = fetch_monitor_data(page_id, currency_id, monitor_code, start_date, end_date, data_type)  
+            
+            if not results:
+                raise ValueError('No se encontraron datos para el monitor solicitado.')
+            
+            cache.set(json.dumps(results, default=str))
     
     data = json.loads(cache.get())
     if data_type == 'daily':
