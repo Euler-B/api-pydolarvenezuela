@@ -10,7 +10,6 @@ from pyDolarVenezuela.pages import (
 )
 from pyDolarVenezuela import Monitor, CheckVersion
 from .core import logger
-from .core import cache
 from .consts import (
     TIME_ZONE,
     CURRENCIES,
@@ -18,8 +17,9 @@ from .consts import (
     UPDATE_SCHEDULE
 )
 from ._provider import Provider
-from .utils import send_webhooks
 from .backup import backup
+from .services.webhooks import send_webhooks
+from .utils.cache import CacheProvider
 from .storage.dropbox import DropboxStorage
 from .storage.telegram import TelegramStorage
 
@@ -41,7 +41,7 @@ def update_data(name: str, monitor: Monitor) -> None:
     """
     try:
         provider = Provider(monitor.provider, monitor.currency, monitor.get_all_monitors())
-        cache.set(f'{name}:{monitor.currency}', json.dumps(
+        CacheProvider(name, monitor.currency).set(json.dumps(
             [m.__dict__ for m in provider.get_list_monitors()], default=str))
     except Exception as e:
         logger.warning(f'Error al obtener datos de {monitor.provider.name}: {str(e)}')

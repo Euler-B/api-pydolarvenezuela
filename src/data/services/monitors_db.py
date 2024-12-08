@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 from ..models import Page, Monitor, Currency, MonitorPriceHistory
 from .webhooks_db import (
     get_unique_monitor_ids as _get_unique_monitor_ids_,
-    set_monitor_webhook as _set_monitor_webhook_
 )
+from ...utils.cache import CacheWebhookMonitor
 
 # Validators
 
@@ -39,7 +39,7 @@ def create_page(session: Session, name: str, url: str) -> int:
     return page.id
 
 def delete_page(session: Session, name: str) -> None:
-    from ...utils import get_provider
+    from ...utils.func_consts import get_provider
     provider_name = get_provider(name)
     page = session.query(Page).filter(func.lower(Page.name) == func.lower(provider_name)).first()
     if not page:
@@ -76,7 +76,7 @@ def update_monitor(session: Session, page_id: int, currency_id: int, monitor_id:
     monitor_ids = _get_unique_monitor_ids_(session)
 
     if monitor_id in monitor_ids:
-        _set_monitor_webhook_(monitor_id, True)
+        CacheWebhookMonitor(monitor_id).set(True)
 
     old_price = kwargs.get('price_old')
     new_price = kwargs.get('price')

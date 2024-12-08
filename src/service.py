@@ -12,15 +12,9 @@ from .data.services.monitors_db import (
     get_range_history_prices as _get_range_history_prices_, 
     get_daily_changes as _get_daily_changes_
 )
+from .utils.cache import CacheProvider, CacheHistoryMonitor
 from .cron import monitors
-from .core import cache
 from .consts import PROVIDERS, CURRENCIES
-
-def _get_cache_key(*args) -> str:
-    """
-    Obtiene la clave de caché.
-    """
-    return ':'.join(args)
 
 def _check_currency_provider(provider, currency):
     """
@@ -63,8 +57,8 @@ def get_all_monitors(currency: str, provider: str, format_date: Literal['timesta
         return get_accurate_monitors(None, format_date)
     _check_currency_provider(provider, currency)
     
-    key = _get_cache_key(provider, CURRENCIES.get(currency))
-    monitors = json.loads(cache.get(key)) if cache.get(key) else None
+    cache = CacheProvider(provider, CURRENCIES.get(currency))
+    monitors = json.loads(cache.get()) if cache.get() else None
     monitors_dict = None
     
     if monitors is not None:
@@ -84,10 +78,11 @@ def get_accurate_monitors(monitor_code: Optional[str], format_date: str) -> Unio
     - monitor_code: Key del monitor.
     - format_date: Formato de fecha.
     """
-    default_monitors = ["bcv:usd", "enparalelovzla:usd"]
+    default_monitors = [('bcv', 'usd'), ('enparalelovzla', 'usd')]
     monitor_data = {}
     for key in default_monitors:
-        data = json.loads(cache.get(key)) if cache.get(key) else None
+        cache = CacheProvider(*key)
+        data = json.loads(cache.get()) if cache.get() else None
         
         if data is None:
             continue
@@ -141,9 +136,9 @@ def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: st
     """
     Obtiene el historial de precios de un monitor.
     """
-    key = _get_cache_key(page, currency, monitor_code, start_date, end_date, data_type)
+    cache = CacheHistoryMonitor(page, currency, monitor_code, start_date, end_date, data_type)
     
-    if cache.get(key) is None:
+    if cache.get() is None:
         for monitor in monitors:     
             name_page = PROVIDERS.get(monitor.provider.name)['id'] 
             currency = CURRENCIES.get(currency, currency)  
@@ -163,12 +158,12 @@ def get_monitor_data(currency: str, page: str, monitor_code: str, start_date: st
                     if not results:
                         raise ValueError('No se encontraron datos para el monitor solicitado.')
                     
-                    cache.set(key, json.dumps(results, default=str), ex=1800)
+                    cache.set(json.dumps(results, default=str))
                     break
         else:
             raise KeyError('No se encontró el monitor al que quieres acceder.')
     
-    data = json.loads(cache.get(key))
+    data = json.loads(cache.get())
     if data_type == 'daily':
         schema = DailyChangeSchema(custom_format=format_date, many=True).dump(data)
     else:

@@ -3,22 +3,17 @@ import asyncio
 from uuid import uuid4
 from typing import Optional
 from sqlalchemy.orm import Session
-from .data.engine import engine
-from .core import logger
-from .consts import PROVIDERS, CURRENCIES
-from .data.services.webhooks_db import (
-    get_all_monitor_webhook,
+from ..data.engine import engine
+from ..core import logger
+from ..data.services.webhooks_db import (
     change_webhook_status, 
-    delete_all_monitor_webhook,
     get_all_webhooks,
-    set_webhook_status,
-    is_intents_webhook_limit,
-    delete_webhook_status,
     get_webhook_by_model as get_webhook
 )
-from .data.services.monitors_db import get_monitor_by_id as _get_monitor_by_id_
-from .data.schemas import MonitorSchema
-from .exceptions import HTTPException
+from ..data.services.monitors_db import get_monitor_by_id as _get_monitor_by_id_
+from ..data.schemas import MonitorSchema
+from ..utils.cache import CacheWebhookUser, CacheWebhookMonitor
+from ..exceptions import HTTPException
 
 async def send_webhook(url: str, token: str, verify: bool, data: Optional[dict] = {'message': 'Hello, World!'}) -> None:
     """
@@ -69,7 +64,7 @@ def send_webhooks(test: bool = False, **kwargs) -> None:
         return
 
     with Session(engine) as session:
-        monitor_webhooks = get_all_monitor_webhook()
+        monitor_webhooks = CacheWebhookMonitor().get_all_webhook_active()
         if not monitor_webhooks:
             return
         
@@ -97,26 +92,12 @@ def send_webhooks(test: bool = False, **kwargs) -> None:
             except Exception as e:
                 logger.error(f'Error al enviar el webhook: {str(e)}')
 
-                if not is_intents_webhook_limit(webhook.id):
-                    set_webhook_status(webhook.id, 1)
+                cache_user = CacheWebhookUser(webhook.id)
+                if not cache_user.is_intents_webhook_limit():
+                    cache_user.set()
                 else:
                     change_webhook_status(session, webhook.id, False)
-                    delete_webhook_status(webhook.id)
+                    cache_user.delete()
                     logger.info(f'Webhook desactivado por superar el límite de intentos: {webhook.url}')
 
-        delete_all_monitor_webhook()
-
-def get_provider(provider: str) -> str:
-    """
-    Obtiene el proveedor de la lista de proveedores.
-    """
-    for key, value in PROVIDERS.items():
-        if provider.lower() in value['id'].lower():
-            return key
-    return provider
-        
-def get_currency(currency: str) -> str:
-    """
-    Obtiene la moneda de la lista de monedas.
-    """
-    return CURRENCIES.get(currency.lower())
+        CacheWebhookMonitor().delete_all_monitor_webhook()

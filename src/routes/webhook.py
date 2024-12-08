@@ -10,7 +10,7 @@ from ..data.services.webhooks_db import (
     get_webhook as _get_webhook_,
     raise_webhook_exists_error
 )
-from ..utils import send_webhook as _send_webhook_, send_webhooks
+from ..services.webhooks import send_webhook as _send_webhook_, send_webhooks
 
 route = Blueprint('webhook', __name__)
 
