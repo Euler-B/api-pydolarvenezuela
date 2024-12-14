@@ -72,6 +72,17 @@
               "example": "default",
               "enum": ["default", "iso", "timestamp"]
             }
+          },
+          {
+            "name": "rounded_price",
+            "in": "query",
+            "required": false,
+            "description": "Redondear el precio. (`true`, `false`).",
+            "schema": {
+              "type": "string",
+              "example": "true",
+              "enum": ["true", "false"]
+            }
           }
         ],
         "responses": {
@@ -224,6 +235,17 @@
             }
           },
           {
+            "name": "rounded_price",
+            "in": "query",
+            "required": false,
+            "description": "Redondear el precio. (`true`, `false`).",
+            "schema": {
+              "type": "string",
+              "example": "true",
+              "enum": ["true", "false"]
+            }
+          },
+          {
             "name": "start_date",
             "in": "query",
             "required": true,
@@ -313,6 +335,17 @@
               "type": "string",
               "example": "default",
               "enum": ["default", "iso", "timestamp"]
+            }
+          },
+          {
+            "name": "rounded_price",
+            "in": "query",
+            "required": false,
+            "description": "Redondear el precio. (`true`, `false`).",
+            "schema": {
+              "type": "string",
+              "example": "true",
+              "enum": ["true", "false"]
             }
           },
           {
