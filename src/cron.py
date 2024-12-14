@@ -50,7 +50,7 @@ def reload_monitors() -> None:
     """
     for monitor in monitors:
         name = PROVIDERS.get(monitor.page.name)['id']
-        logger.info(f'Recargando datos de "{monitor.provider.name}".')
+        logger.info(f'Recargando datos de "{monitor.page.name}".')
         update_data(name, monitor)
     send_webhooks()
 
