@@ -22,19 +22,6 @@ class Monitor:
     symbol: Optional[str] = "" 
 
 @dataclass
-class HistoryPrice:
-    price: float
-    price_high: float
-    price_low: float
-    price_open: float
-    last_update: datetime
-
-@dataclass
-class ChangePrice:
-    price: float
-    last_update: datetime
-
-@dataclass
 class Image:
     title: str
     image: str
