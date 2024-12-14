@@ -50,7 +50,7 @@ def send_webhooks(test: bool = False, **kwargs) -> None:
             data = []
             for m in webhook.monitors:
                 monitor = _get_monitor_by_id_(session, m.monitor_id)
-                data.append(MonitorSchema().dump(monitor))
+                data.append(MonitorSchema(rounded_price=False).dump(monitor))
 
             try:
                 asyncio.run(
@@ -83,7 +83,7 @@ def send_webhooks(test: bool = False, **kwargs) -> None:
                     continue
 
                 monitor = _get_monitor_by_id_(session, m.monitor_id)
-                monitors_ids_save[m.monitor_id] = MonitorSchema().dump(monitor)
+                monitors_ids_save[m.monitor_id] = MonitorSchema(rounded_price=False).dump(monitor)
                 data.append(monitors_ids_save[m.monitor_id])
             try:
                 asyncio.run(
