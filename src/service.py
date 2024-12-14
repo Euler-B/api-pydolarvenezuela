@@ -2,7 +2,6 @@ import json
 import re
 from typing import Union, Optional, Literal, Dict, List, Any
 from datetime import datetime
-from pyDolarVenezuela import getdate, currency_converter
 from sqlalchemy.orm import Session
 from .data.engine import engine
 from .data.schemas import HistoryPriceSchema, DailyChangeSchema, MonitorSchema
@@ -12,10 +11,30 @@ from .data.services.monitors_db import (
     get_range_history_prices as _get_range_history_prices_, 
     get_daily_changes as _get_daily_changes_
 )
+from .utils.time import get_time_zone as getdate
 from .utils.cache import CacheProvider, CacheHistoryMonitor
 from .utils.func_consts import get_provider, get_currency
-from .cron import monitors
 from .consts import PROVIDERS, CURRENCIES
+from ._dataclass import Monitor
+
+def _currency_converter(type: Literal['VES', 'USD', 'EUR'], value, monitor: Union[Monitor, dict]) -> Union[float, None]:
+    """
+    Convierte una cantidad de dinero de una moneda a otra utilizando los datos de un monitor específico.
+    """
+    price_monitor = monitor.price if isinstance(monitor, Monitor) else monitor.get('price', None)
+    if not price_monitor:
+        raise KeyError('The monitor was not found')
+
+    try:
+        if isinstance(value, int) or isinstance(value, float):
+            if type == 'VES':
+                return value / float(price_monitor)
+            elif type in ['USD', 'EUR']:
+                return value * float(price_monitor)
+            else:
+                raise ValueError(f"El tipo debe ser USD o VES no {type}.")
+    except TypeError as e:
+        raise e
 
 def _check_currency_provider(provider, currency):
     """
@@ -205,6 +224,6 @@ def get_price_converted(currency: str, type: str, value: Union[int, float], page
     - value: Valor a convertir.
     """
     monitor = get_page_or_monitor(currency, page, monitor_code, 'default')
-    result = currency_converter(type, float(value), monitor)
+    result = _currency_converter(type, float(value), monitor)
 
     return result
