@@ -3,7 +3,6 @@ from sqlalchemy.orm import sessionmaker
 from ._pages import (
     AlCambio, 
     BCV, 
-    ExchangeMonitor, 
     EnParaleloVzla
 )
 from ._dataclass import Monitor, Page
@@ -69,7 +68,7 @@ class Provider:
                 if old_monitor.image != monitor.image:
                     update_data['image'] = monitor.image
 
-                if self.provider in [AlCambio, ExchangeMonitor, EnParaleloVzla]:
+                if self.provider in [AlCambio, EnParaleloVzla]:
                     if old_last_update.astimezone(TIME_ZONE) != new_last_update:
                         _update_monitor_(self.session, self.page_id, self.currency_id, old_monitor.id, **update_data)
                 elif self.provider in [BCV]:
