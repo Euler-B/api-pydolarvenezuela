@@ -47,8 +47,12 @@ Ruta:
 | page       | `string` | _Opcional._ Indica el nombre de la página donde deseas obtener su valor. |
 | monitor    | `string` | _Opcional._ Indica el monitor específico. |
 | format_date    | `string` | _Opcional._ Indica el tipo de formato de fecha. (`iso`, `timestamp`, `default`) |
+| rounded_price    | `boolean` | _Opcional._ Indica si deseas obtener el precio redondeado. |
 
-El parámetro `format_date` permite obtener la fecha en diferentes formatos. Por defecto, la fecha se muestra en formato `DD/MM/YYYY,  HH:mm AM/PM`. Si deseas obtener la fecha en formato `ISO` o `timestamp`, puedes especificarlo en el parámetro `format_date`.
+**Nota**:
+- El parámetro `format_date` permite obtener la fecha en diferentes formatos. Por defecto, la fecha se muestra en formato `DD/MM/YYYY,  HH:mm AM/PM`. Si deseas obtener la fecha en formato `ISO` o `timestamp`, puedes especificarlo en el parámetro `format_date`.
+
+- El parámetro `rounded_price` permite obtener el precio redondeado. Por defecto, el precio se muestra con 2 decimales. El cambio solo se aplica a las fuentes que proporcionan precios en decimales grandes.
 
 ### `GET /api/v1/<currency>/history`
 
@@ -67,6 +71,7 @@ Header:
 | start_date    | `string` | Fecha de inicio del historial. `DD-MM-YYYY` |
 | end_date   | `string` | Fecha de fin del historial. `DD-MM-YYYY` |
 | format_date    | `string` | _Opcional._ Indica el tipo de formato de fecha. (`iso`, `timestamp`, `default`) |
+| rounded_price    | `boolean` | _Opcional._ Indica si deseas obtener el precio redondeado. |
 
 ### `GET /api/v1/<currency>/changes`
 
@@ -84,6 +89,7 @@ Header:
 | monitor    | `string` | Indica el monitor específico. |
 | date    | `string` | Fecha de la cual se desea obtener los precios. `DD-MM-YYYY` |
 | format_date    | `string` | _Opcional._ Indica el tipo de formato de fecha. (`iso`, `timestamp`, `default`) |
+| rounded_price    | `boolean` | _Opcional._ Indica si deseas obtener el precio redondeado. |
 
 ### `GET /api/v1/<currency>/conversion`
 
