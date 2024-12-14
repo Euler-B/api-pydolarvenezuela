@@ -4,6 +4,19 @@ from marshmallow import fields, pre_dump
 from ..consts import TIME_ZONE
 ma = Marshmallow()
 
+class PriceStructuresSchema(ma.Schema):
+    def __init__(self, *args, **kwargs):
+        self.rounded_price = kwargs.pop('rounded_price', True)
+        super().__init__(*args, **kwargs)
+
+    @pre_dump
+    def adjust_price(self, data, **kwargs):
+        if self.rounded_price:
+            for key, value in data.items():
+                if isinstance(value, float) and key not in ['percent', 'change', 'last_update']:
+                    data[key] = round(value, 2)
+        return data
+
 class BaseSchema(ma.Schema):
     def __init__(self, *args, **kwargs):
         self.custom_format = kwargs.pop('custom_format', 'default')
@@ -41,20 +54,20 @@ class UserSchema(BaseSchema):
     class Meta:
         fields = ("id", "name", "token", "is_premium", "created_at")
 
-class MonitorSchema(BaseSchema):
+class MonitorSchema(BaseSchema, PriceStructuresSchema):
     last_update = fields.String()
     price_old = fields.Float(missing=0.0, allow_none=True, default=0.0)
     
     class Meta:
         fields = ("key", "title", "price", "price_old", "last_update", "image", "percent", "change", "color", "symbol")
 
-class HistoryPriceSchema(BaseSchema):
+class HistoryPriceSchema(BaseSchema, PriceStructuresSchema):
     last_update = fields.String()
     
     class Meta:
         fields = ("price", "price_high", "price_low", "last_update")
 
-class DailyChangeSchema(BaseSchema):
+class DailyChangeSchema(BaseSchema, PriceStructuresSchema):
     last_update = fields.String()
     
     class Meta:

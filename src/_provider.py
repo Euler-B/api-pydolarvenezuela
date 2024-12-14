@@ -1,12 +1,12 @@
 from typing import List
 from sqlalchemy.orm import sessionmaker
-from pyDolarVenezuela.pages import (
+from ._pages import (
     AlCambio, 
     BCV, 
     ExchangeMonitor, 
     EnParaleloVzla
 )
-from pyDolarVenezuela.models import Monitor, Page
+from ._dataclass import Monitor, Page
 from .data.engine import engine
 from .data.models import Monitor as MonitorModel
 from .data.services.monitors_db import (

@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from pyDolarVenezuela.pages import (
+from ._pages import (
     AlCambio, 
     BCV, 
     CriptoDolar, 
@@ -8,7 +8,7 @@ from pyDolarVenezuela.pages import (
     EnParaleloVzla, 
     Italcambio
 )
-from pyDolarVenezuela import Monitor, CheckVersion
+from .services.pages import PageData
 from .core import logger
 from .consts import (
     TIME_ZONE,
@@ -23,16 +23,14 @@ from .utils.cache import CacheProvider
 from .storage.dropbox import DropboxStorage
 from .storage.telegram import TelegramStorage
 
-CheckVersion.check = False
-
 pages    = [AlCambio, BCV, CriptoDolar, DolarToday, EnParaleloVzla, Italcambio]
 monitors = [
-    Monitor(page, currency) 
+    PageData(page, currency=currency)
     for currency in CURRENCIES.values() 
     for page in pages if currency in page.currencies
 ]
 
-def update_data(name: str, monitor: Monitor) -> None:
+def update_data(name: str, monitor: PageData) -> None:
     """
     Obtiene los datos de un monitor y los guarda en caché.
 
@@ -40,19 +38,19 @@ def update_data(name: str, monitor: Monitor) -> None:
     - monitor: Instancia de Monitor.
     """
     try:
-        provider = Provider(monitor.provider, monitor.currency, monitor.get_all_monitors())
-        CacheProvider(name, monitor.currency).set(json.dumps(
+        provider = Provider(monitor.page, monitor.kwargs['currency'], monitor.get_values())
+        CacheProvider(name, monitor.kwargs['currency']).set(json.dumps(
             [m.__dict__ for m in provider.get_list_monitors()], default=str))
     except Exception as e:
-        logger.warning(f'Error al obtener datos de {monitor.provider.name}: {str(e)}')
+        logger.warning(f'Error al obtener datos de {monitor.page.name}: {str(e)}')
 
 def reload_monitors() -> None:
     """
     Recarga los datos de los monitores y los guarda en caché.
     """
     for monitor in monitors:
-        name = PROVIDERS.get(monitor.provider.name)['id']
-        logger.info(f'Recargando datos de "{monitor.provider.name}".')
+        name = PROVIDERS.get(monitor.page.name)['id']
+        logger.info(f'Recargando datos de "{monitor.page.name}".')
         update_data(name, monitor)
     send_webhooks()
 
@@ -66,10 +64,10 @@ def job() -> None:
     _hour_ = dt.strftime('%H:%M')
 
     for monitor in monitors:
-        name = PROVIDERS.get(monitor.provider.name)['id']
+        name = PROVIDERS.get(monitor.page.name)['id']
         
         if name not in UPDATE_SCHEDULE.keys():
-            logger.info(f'Actualizando datos de "{monitor.provider.name}".')
+            logger.info(f'Actualizando datos de "{monitor.page.name}".')
             update_data(name, monitor)
             continue
 
@@ -78,7 +76,7 @@ def job() -> None:
 
         for start, end in UPDATE_SCHEDULE.get(name, {}).get('hours', []):
             if _hour_ >= start and _hour_ <= end:
-                logger.info(f'Actualizando datos de "{monitor.provider.name}".')
+                logger.info(f'Actualizando datos de "{monitor.page.name}".')
                 update_data(name, monitor)
                 break
     send_webhooks()
