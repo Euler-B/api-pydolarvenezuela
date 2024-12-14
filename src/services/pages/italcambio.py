@@ -25,7 +25,7 @@ class ItalcambioService(Base):
                     title = code_currencies[monitors_amounts[i]]
                     key = monitors_amounts[i].lower()
                     price_old = float(str(monitors_amounts[i+1]).split()[-1])
-                    price = round(price_old, 2)
+                    price = price_old
                     last_update = datetime.now(standard_time_zone)
 
                     rates.append({
