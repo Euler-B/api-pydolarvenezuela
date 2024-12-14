@@ -49,6 +49,13 @@ paths:
           schema:
             type: string
             default: default
+        - name: rounded_price
+          in: query
+          required: false
+          description: Redondear el precio.
+          schema:
+            type: boolean
+            default: true
       responses:
         200:
           description: La información de los monitores de la página.
@@ -140,6 +147,13 @@ paths:
           schema:
             type: string
             default: default
+        - name: rounded_price
+          in: query
+          required: false
+          description: Redondear el precio.
+          schema:
+            type: boolean
+            default: true
         - name: start_date
           in: query
           required: true
@@ -196,6 +210,13 @@ paths:
           schema:
             type: string
             default: default
+        - name: rounded_price
+          in: query
+          required: false
+          description: Redondear el precio.
+          schema:
+            type: boolean
+            default: true
         - name: date
           in: query
           required: true
