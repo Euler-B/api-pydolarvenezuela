@@ -9,7 +9,7 @@ class Base:
         raise NotImplementedError
     
     @classmethod
-    def get_values(cls, **kwargs) -> List[Dict[str, Any]]:
+    def get_values(cls, **kwargs) -> List[Monitor]:
         try:
             result = cls._load(**kwargs)
             if not result:
