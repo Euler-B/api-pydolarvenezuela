@@ -61,6 +61,15 @@ class User(Base):
 
     webhooks = relationship("Webhook", back_populates="user")
 
+class UserPetition(Base):
+    __tablename__ = 'user_petitions'
+
+    id              = Column(Integer, primary_key=True)
+    user_id         = Column(Integer, ForeignKey('users.id'), nullable=False)
+    path            = Column(String, nullable=False)
+    total_petitions = Column(Integer, nullable=False)
+    created_at      = Column(DateTime, nullable=False)
+
 class Webhook(Base):
     __tablename__ = 'webhooks'
 
