@@ -10,6 +10,10 @@ def is_user_valid(session: Session, token: str) -> bool:
         return False
     return True
 
+def get_user_id(session: Session, token: str) -> int:
+    user = session.query(User).filter(User.token == token).first()
+    return user.id
+
 def create_user(session: Session, name: str) -> str:
     token = f'Bearer {secrets.token_urlsafe(16)}'
     session.add(User(name=name, token=token, is_premium=True, created_at=datetime.now()))
