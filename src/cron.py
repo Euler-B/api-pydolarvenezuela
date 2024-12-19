@@ -19,7 +19,7 @@ from .consts import (
 from ._provider import Provider
 from .backup import backup
 from .services.webhooks import send_webhooks
-from .utils.cache import CacheProvider
+from .utils.cache import CacheProvider, CacheUserPetition
 from .storage.dropbox import DropboxStorage
 from .storage.telegram import TelegramStorage
 
@@ -80,6 +80,21 @@ def job() -> None:
                 update_data(name, monitor)
                 break
     send_webhooks()
+
+def generate_petitions() -> None:
+    """
+    Genera las peticiones de los usuarios y las guarda en la base de datos.
+    """
+    from sqlalchemy.orm import Session
+    from .data.engine import engine
+    from .data.services.user_petitions_db import create_user_petition as _create_user_petition_
+
+    cache = CacheUserPetition()
+
+    with Session(engine) as session:
+        for user in cache.get_all_petitions_users():
+            _create_user_petition_(session, **user)
+        cache.delete_all_petitions_users()
 
 def upload_backup_dropbox() -> None:
     """
