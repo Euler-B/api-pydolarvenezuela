@@ -30,7 +30,7 @@ class CacheWebhookMonitor(Cache):
         super().__init__('webhook:monitor:' + ':'.join(map(str, args)))
 
     def set(self, value: bool) -> None:
-        return super().set(int(value))
+        super().set(int(value))
 
     def get_all_webhook_active(self) -> list:
         keys = self.cache.keys('webhook:monitor:*')
@@ -50,7 +50,33 @@ class CacheWebhookUser(Cache):
 
     def set(self) -> None:
         intents = self.get() if self.get() else 0
-        return super().set(int(intents) + 1)
+        super().set(int(intents) + 1)
 
     def is_intents_webhook_limit(self) -> bool:
         return int(self.get() if self.get() else 0) == 3
+    
+class CacheUserPetition(Cache):
+    def __init__(self, *args) -> None:
+        super().__init__('user:petition:' + ':'.join(map(str, args)))
+
+    def set(self) -> None:
+        total_petitions = self.get() if self.get() else 0
+        super().set(int(total_petitions) + 1)
+
+    def get_all_petitions_users(self) -> list:
+        keys = self.cache.keys('user:petition:*')
+        if not keys:
+            return []
+        
+        return [
+            {
+                'token': f'Bearer {key.split(':')[-1]}',
+                'path': key.split(':')[-2],
+                'total_petitions': int(self.cache.get(key))
+            } for key in keys
+        ]
+
+    def delete_all_petitions_users(self) -> None:
+        keys = self.cache.keys('user:petition:*')
+        for key in keys:
+            self.cache.set(key, int(0))
