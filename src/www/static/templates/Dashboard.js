@@ -28,7 +28,7 @@ export default {
                     </div>
                     </div>
                 </div>
-                <nav class="mt-4 flex-grow hidden md:block">
+                <nav class="p-4 border-t border-blue-600 hidden md:block">
                     <ul>
                     <li :class="{'bg-blue-600': isActive('/dashboard/usage')}" class="py-2 px-4 hover:bg-blue-600 flex items-center">
                         <i class="fas fa-chart-line mr-2"></i>
