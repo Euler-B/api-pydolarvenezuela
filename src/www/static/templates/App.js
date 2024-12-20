@@ -5,9 +5,17 @@ export default {
     components: {
         HeaderComponent
     },
+    computed: {
+        isDashboardRoute() {
+            return this.$route.path.startsWith('/dashboard');
+        },
+        isLoginRoute() {
+            return this.$route.path === '/login';
+        }
+    },
     template: `
         <div>
-            <HeaderComponent />
+            <HeaderComponent v-if="!isDashboardRoute && !isLoginRoute" />
             <router-view />
         </div>
     `

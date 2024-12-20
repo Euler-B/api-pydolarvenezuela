@@ -3,6 +3,7 @@ from flask import request
 from sqlalchemy.orm import sessionmaker
 from .data.engine import engine
 from .data.services.users_db import is_user_valid
+from .utils.cache import CacheUserPetition
 from .core import limiter
 from .consts import TOKEN_SECRET
 from .exceptions import HTTPException, exception_map
@@ -48,6 +49,10 @@ def token_required(f):
 
         if token and not is_user_valid(session, token):
             raise HTTPException(401, "Token inválido.")
+        
+        if request.path in ['/api/v1/dollar', '/api/v1/dollar/history', '/api/v1/dollar/changes']:
+            CacheUserPetition(request.path, token.split(' ')[1]).set()
+
         return f(*args, **kwargs)
     return decorated
 
