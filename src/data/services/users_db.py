@@ -27,6 +27,12 @@ def modificate_user(session: Session, id: int, is_premium: bool) -> None:
     })
     session.commit()
 
+def change_user_name(session: Session, id: int, name: str) -> None:
+    session.query(User).filter(User.id == id).update({
+        "name": name
+    })
+    session.commit()
+
 def delete_user(session: Session, id: int) -> None:
     session.query(User).filter(User.id == id).delete()
     session.commit()
