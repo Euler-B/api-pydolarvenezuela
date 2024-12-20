@@ -13,16 +13,16 @@ export default {
                             <div v-if="menuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
                                 <ul>
                                     <li class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <router-link to="/dashboard/usage" @click="toggleMenu">Usage</router-link>
+                                        <router-link to="/dashboard/usage" @click="toggleMenu">Uso</router-link>
                                     </li>
                                     <li class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <router-link to="/dashboard/profile" @click="toggleMenu">Profile</router-link>
+                                        <router-link to="/dashboard/profile" @click="toggleMenu">Perfil</router-link>
                                     </li>
                                     <li class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <a href="#" @click.prevent="logout">Logout</a>
+                                        <a href="#" @click.prevent="logout">Cerrar sesión</a>
                                     </li>
                                     <li class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <router-link to="/" @click="toggleMenu">Back</router-link>
+                                        <router-link to="/" @click="toggleMenu">Salir</router-link>
                                     </li>
                                 </ul>
                             </div>
