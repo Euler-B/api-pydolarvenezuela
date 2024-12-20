@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flasgger import Swagger
 
 from src.core import limiter
-from src.consts import TIMEOUT, DROPBOX_JOB, TELEGRAM_JOB, URL_DB
+from src.consts import TIMEOUT, DROPBOX_JOB, TELEGRAM_JOB
 from src import cron
 from src.routes import index, monitors, admin, webhook, petitions
 from src.exceptions import (
