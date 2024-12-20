@@ -4,6 +4,7 @@ export default {
     name: 'HeaderComponent',
     setup() {
         const stars = Vue.ref(0);
+        const token = Vue.ref('');
         const menuOpen = Vue.ref(false);
         const setStars = async () => {
             const starsValue = await getAmountStars();
@@ -25,11 +26,15 @@ export default {
             } else {
                 stars.value = await setStars();
             }
+
+            if (localStorage.getItem('token')) {
+                token.value = localStorage.getItem('token');
+            }
         };
 
         inicialize();
 
-        return { stars, menuOpen, toggleMenu };
+        return { stars, menuOpen, toggleMenu, token };
   },
   template: `
   <header class="bg-gray-100 font-bold p-4 shadow-lg">
@@ -46,6 +51,18 @@ export default {
           <li><a class="text-blue-600 hover:text-blue-800 transition duration-300" href="/pricing">Planes</a></li>
         </ul>
       </nav>
+
+      <div class="w-full sm:w-auto mt-2 sm:mt-0 flex justify-center sm:justify-start items-center bg-blue-600 px-3 py-2 rounded-lg hover:bg-blue-800 transition duration-300">
+        <a v-if="!token" href="/login" class="flex items-center text-white">
+          <i class="fa fa-key text-2xl mr-2"></i>
+          <p class="mb-0">Login</p>
+        </a>
+        <a v-else href="/dashboard" class="flex items-center text-white">
+          <i class="fa fa-tachometer-alt text-2xl mr-2"></i>
+          <p class="mb-0">Dashboard</p>
+        </a>
+      </div>
+
       <div class="w-full sm:w-auto mt-2 sm:mt-0 flex justify-center sm:justify-start items-center bg-blue-600 px-3 py-2 rounded-lg hover:bg-blue-800 transition duration-300">
         <a href="https://github.com/fcoagz/api-pydolarvenezuela" target="_blank" class="flex items-center text-white">
           <i class="fa-brands fa-github text-2xl mr-2"></i>
