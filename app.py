@@ -7,7 +7,7 @@ from flasgger import Swagger
 from src.core import limiter
 from src.consts import TIMEOUT, DROPBOX_JOB, TELEGRAM_JOB
 from src import cron
-from src.routes import index, monitors, admin, webhook, petitions
+from src.routes import index, monitors, admin, webhook, petitions, user
 from src.exceptions import (
     HTTPException,
     handle_http_exception,
@@ -51,6 +51,7 @@ app.register_error_handler(504, gateway_timeout)
 app.register_blueprint(index.route)
 app.register_blueprint(monitors.route, url_prefix='/api/v1')
 app.register_blueprint(admin.route, url_prefix='/api/admin')
+app.register_blueprint(user.route, url_prefix='/api/user')
 app.register_blueprint(webhook.route, url_prefix='/api/user')
 app.register_blueprint(petitions.route, url_prefix='/api/user')
 
