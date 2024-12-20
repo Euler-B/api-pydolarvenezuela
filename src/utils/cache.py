@@ -1,3 +1,4 @@
+import json
 from typing import Optional, Any
 from ..core import cache
 
@@ -80,3 +81,13 @@ class CacheUserPetition(Cache):
         keys = self.cache.keys('user:petition:*')
         for key in keys:
             self.cache.set(key, int(0))
+
+class CacheHistoryPetition(Cache):
+    def __init__(self, *args) -> None:
+        super().__init__('history:petition:' + ':'.join(map(str, args)), ex=900)
+
+    def set(self, value: Any) -> None:
+        super().set(json.dumps(value))
+
+    def get(self) -> Any:
+        return json.loads(super().get()) if super().get() else None
