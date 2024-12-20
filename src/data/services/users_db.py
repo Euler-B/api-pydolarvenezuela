@@ -34,3 +34,7 @@ def delete_user(session: Session, id: int) -> None:
 def get_users(session: Session) -> list:
     models = session.query(User).all()
     return UserSchema().dump(models, many=True)
+
+def get_user(session: Session, id: int) -> dict:
+    model = session.query(User).filter(User.id == id).first()
+    return UserSchema().dump(model)
