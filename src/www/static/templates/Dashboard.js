@@ -72,5 +72,8 @@ export default {
             localStorage.removeItem('token');
             this.$router.push('/');
         }
+    },
+    mounted() { 
+        this.$router.push('/dashboard/usage'); 
     }
 }
