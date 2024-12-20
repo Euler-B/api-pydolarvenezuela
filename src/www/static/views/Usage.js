@@ -120,6 +120,14 @@ export default {
         color += letters[Math.floor(Math.random() * 16)];
       }
       return color;
+    },
+    formatTotal(total) { 
+      if (total >= 1000000) { 
+        return (total / 1000000).toFixed(1) + 'm'; 
+      } else if (total >= 1000) { 
+        return (total / 1000).toFixed(1) + 'k'; 
+      } 
+      return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
     }
   },
   mounted() {
@@ -137,7 +145,7 @@ export default {
           <option value="30d">Últimos 30 Días</option>
         </select>
       </div>
-      <p class="text-lg font-medium mb-4">Total de Solicitudes: {{ totalRequests }}</p>
+      <p class="text-lg font-medium mb-4">Total de Solicitudes: {{ formatTotal(totalRequests) }}</p>
       <div class="relative h-96 w-full md:w-3/4 lg:w-2/3 mx-auto">
         <canvas id="usageChart"></canvas>
       </div>
