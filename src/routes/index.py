@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template
+from ..consts import ALLOWED_ROUTES
+from ..exceptions import HTTPException
 from ..decorators import handle_exceptions
 
 route = Blueprint('index', __name__)
@@ -7,4 +9,6 @@ route = Blueprint('index', __name__)
 @route.get('/<path:path>')
 @handle_exceptions
 def index(path: str = None):
-    return render_template('index.html')
+    if path in ALLOWED_ROUTES:
+        return render_template('index.html')
+    raise HTTPException(404, "No se pudo encontrar la página que estaba buscando. Por favor, consulta la documentación en: https://github.com/fcoagz/api-pydolarvenezuela")
