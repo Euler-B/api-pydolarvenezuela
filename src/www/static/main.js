@@ -1,10 +1,9 @@
 // Components
 import Home from './components/Home.js';
 import Plans from './components/Plans.js';
+import Login from './components/LoginToken.js';
 import App from './templates/App.js';
-
-// Error handling
-import NotFound from './components/raises/NotFound.js';
+import Dashboard from './templates/Dashboard.js';
 
 const routes = [
     {
@@ -20,8 +19,12 @@ const router = VueRouter.createRouter({
     routes
 });
 
-if (!routes.map(r => r.path).includes(location.pathname)) {
-    Vue.createApp(NotFound).mount('#app');
-} else {
+if (location.pathname === '/' || location.pathname === '/pricing') {
     Vue.createApp(App).use(router).mount('#app');
+} else if (location.pathname === '/login' && !localStorage.getItem('token')) {
+    Vue.createApp(Login).mount('#app');
+} else if (location.pathname === '/dashboard' && localStorage.getItem('token')) {
+    Vue.createApp(Dashboard).mount('#app');
+} else {
+    window.location.href = '/';
 }
