@@ -90,4 +90,13 @@ UPDATE_SCHEDULE = {
     }
 }
 
+ALLOWED_ROUTES = [
+    '', 
+    'pricing', 
+    'login', 
+    'dashboard', 
+    'dashboard/usage', 
+    'dashboard/profile'
+]
+
 URL_DB  = f'{SQL_MOTOR}://{SQL_USER}:{SQL_PASSWORD}@{SQL_HOST}:{SQL_PORT}/{SQL_DB_NAME}'
