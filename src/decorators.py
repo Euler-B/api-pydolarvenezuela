@@ -38,7 +38,7 @@ def token_required(f):
     def decorated(*args, **kwargs):
         token = request.headers.get('Authorization')
         
-        if not token and request.path in ['/api/v1/dollar/history', '/api/v1/dollar/changes']:
+        if not token and not request.path in ['/api/v1/dollar', '/api/v1/dollar/conversion']:
             raise HTTPException(401, "Requiere un token de autenticación.")
         
         if not token:
@@ -50,7 +50,7 @@ def token_required(f):
         if token and not is_user_valid(session, token):
             raise HTTPException(401, "Token inválido.")
         
-        if request.path in ['/api/v1/dollar', '/api/v1/dollar/history', '/api/v1/dollar/changes']:
+        if request.path in ['/api/v1/dollar', '/api/v1/dollar/history', '/api/v1/dollar/changes', '/api/v1/dollar/conversion']:
             CacheUserPetition(request.path, token.split(' ')[1]).set()
 
         return f(*args, **kwargs)
