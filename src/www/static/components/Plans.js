@@ -4,7 +4,7 @@ export default {
       <section class="bg-white text-gray-800 p-8">
         <div class="max-w-4xl mx-auto text-center">
           <h2 class="text-3xl font-bold mb-6">Planes de la API pyDolarVenezuela</h2>
-          <p class="text-lg mb-6">
+          <p class="text-lg mb-6 text-justify">
             Si deseas conocer características interesantes de la API de por vida, considera hacer una donación o suscribirte a través de Ko-fi. Tu apoyo contribuirá al continuo desarrollo del proyecto y al mantenimiento de los servicios en los que está alojado.
           </p>
           <div class="flex flex-wrap justify-center">
