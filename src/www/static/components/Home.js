@@ -12,7 +12,7 @@ export default {
         <section class="bg-white text-gray-800 p-8">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl font-bold mb-4">Bienvenido a la API pyDolarVenezuela</h2>
-            <p class="text-lg mb-6">
+            <p class="text-lg mb-6 text-justify">
             La API pyDolarVenezuela proporciona datos actualizados sobre el valor del dólar en Venezuela. Es una herramienta esencial para desarrolladores que necesitan información precisa y actualizada sobre el valor del dólar en Venezuela.
             </p>
             <div class="flex justify-center space-x-4">
