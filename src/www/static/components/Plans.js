@@ -7,20 +7,20 @@ export default {
           <p class="text-lg mb-6">
             Si deseas conocer características interesantes de la API de por vida, considera hacer una donación o suscribirte a través de Ko-fi. Tu apoyo contribuirá al continuo desarrollo del proyecto y al mantenimiento de los servicios en los que está alojado.
           </p>
-          <div class="flex flex-wrap justify-center space-x-4">
+          <div class="flex flex-wrap justify-center">
             <!-- Plan Gratis -->
-            <div class="bg-gray-100 p-6 rounded-lg shadow-lg w-full sm:w-80 mb-6">
+            <div class="bg-gray-100 p-6 rounded-lg shadow-lg w-full sm:w-80 mb-6 flex flex-col">
               <h3 class="text-2xl font-bold mb-4">Gratis</h3>
-              <ul class="text-left space-y-2">
+              <ul class="text-left space-y-2 flex-grow">
                 <li><strong>Solicitudes API:</strong> 500/hora</li>
                 <li><strong>Historial de precios:</strong> No</li>
                 <li><strong>Webhooks:</strong> No</li>
               </ul>
             </div>
             <!-- Plan de Por Vida -->
-            <div class="bg-blue-600 text-white p-6 rounded-lg shadow-lg w-full sm:w-80 mb-6">
+            <div class="bg-blue-600 text-white p-6 rounded-lg shadow-lg w-full sm:w-80 mb-6 flex flex-col">
               <h3 class="text-2xl font-bold mb-4">Token</h3>
-              <ul class="text-left space-y-2">
+              <ul class="text-left space-y-2 flex-grow">
                 <li><strong>Solicitudes API:</strong> ∞</li>
                 <li><strong>Historial de precios:</strong> Sí</li>
                 <li><strong>Webhooks:</strong> Sí</li>
