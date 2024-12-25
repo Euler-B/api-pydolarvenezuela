@@ -41,7 +41,8 @@ def get_hourly_totals_24h(session: Session, token: str) -> list:
     cache = CacheHistoryPetition('hourly_totals_24h', user_id)
     if cache.get(): return cache.get()
 
-    query = session.query(UserPetition).filter(UserPetition.created_at >= last_24h, UserPetition.user_id == user_id).all()
+    query = session.query(UserPetition).filter(UserPetition.created_at >= last_24h, UserPetition.user_id == user_id).\
+        order_by(UserPetition.created_at.asc()).all()
     results = {'total': 0, 'paths': defaultdict(list)}
     for hour in query:
         results['paths'][hour.path].append({
@@ -60,7 +61,8 @@ def get_daily_totals_7d(session: Session, token: str) -> list:
     cache = CacheHistoryPetition('daily_totals_7d', user_id)
     if cache.get(): return cache.get()
 
-    query = session.query(UserPetition).filter(UserPetition.created_at >= last_7d, UserPetition.user_id == user_id).all()
+    query = session.query(UserPetition).filter(UserPetition.created_at >= last_7d, UserPetition.user_id == user_id).\
+        order_by(UserPetition.created_at.asc()).all()
     results = _get_hourly_totals_by_day(query)
     cache.set(results)
     
@@ -73,7 +75,8 @@ def get_daily_totals_30d(session: Session, token: str) -> list:
     cache = CacheHistoryPetition('daily_totals_30d', user_id)
     if cache.get(): return cache.get()
 
-    query = session.query(UserPetition).filter(UserPetition.created_at >= last_30d, UserPetition.user_id == user_id).all() 
+    query = session.query(UserPetition).filter(UserPetition.created_at >= last_30d, UserPetition.user_id == user_id).\
+        order_by(UserPetition.created_at.asc()).all() 
     results = _get_hourly_totals_by_day(query)
     cache.set(results)
     
