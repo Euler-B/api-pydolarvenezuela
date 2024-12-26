@@ -153,12 +153,19 @@ def get_page_or_monitor(
             raise KeyError('No se encontró el monitor que estás buscando.')
     return result
 
-def fetch_monitor_data(page_id: int, currency_id: int, monitor_code: str, start_date: str, end_date: str, data_type: Literal['daily', 'history']) -> List[Dict[str, Any]]:
+def fetch_monitor_data(
+        page_id: int, 
+        currency_id: int, 
+        monitor_code: str, 
+        start_date: str, 
+        end_date: str, 
+        data_type: Literal['daily', 'history'],
+        order: Literal['asc', 'desc']) -> List[Dict[str, Any]]:
     with Session(engine) as session:
         if data_type == 'history':
-            return _get_range_history_prices_(session, page_id, currency_id, monitor_code, start_date, end_date)
+            return _get_range_history_prices_(session, page_id, currency_id, monitor_code, start_date, end_date, order)
         elif data_type == 'daily':
-            return _get_daily_changes_(session, page_id, currency_id, monitor_code, start_date)
+            return _get_daily_changes_(session, page_id, currency_id, monitor_code, start_date, order)
         return []
 
 def get_monitor_data(
@@ -169,11 +176,12 @@ def get_monitor_data(
         end_date: str, 
         data_type: Literal['daily', 'history'], 
         format_date: Literal['timestamp', 'iso', 'default'],
-        rounded_price: bool) -> List[Dict[str, Any]]:
+        rounded_price: bool,
+        order: Literal['asc', 'desc']) -> List[Dict[str, Any]]:
     """
     Obtiene el historial de precios de un monitor.
     """
-    cache = CacheHistoryMonitor(page, currency, monitor_code, start_date, end_date, data_type)
+    cache = CacheHistoryMonitor(page, currency, monitor_code, start_date, end_date, data_type, order)
     
     if cache.get() is None:
         name_page = get_provider(page)
@@ -191,7 +199,7 @@ def get_monitor_data(
 
             start_date  = datetime.strptime(start_date, "%d-%m-%Y").date()
             end_date    = datetime.strptime(end_date, "%d-%m-%Y").date()
-            results = fetch_monitor_data(page_id, currency_id, monitor_code, start_date, end_date, data_type)  
+            results = fetch_monitor_data(page_id, currency_id, monitor_code, start_date, end_date, data_type, order)  
             
             if not results:
                 raise ValueError('No se encontraron datos para el monitor solicitado.')
@@ -216,7 +224,8 @@ def get_history_prices(
         start_date: str, 
         end_date: str, 
         format_date: str,
-        rounded_price: bool) -> Union[Dict[str, Any], Dict[str, str]]:
+        rounded_price: bool,
+        order: str) -> Union[Dict[str, Any], Dict[str, str]]:
     """
     Obtiene el historial de precios de un monitor.
 
@@ -226,7 +235,7 @@ def get_history_prices(
     - start_date: Fecha de inicio.
     - end_date: Fecha de finalización.
     """
-    return get_monitor_data(currency, page, monitor_code, start_date, end_date, 'history', format_date, rounded_price)
+    return get_monitor_data(currency, page, monitor_code, start_date, end_date, 'history', format_date, rounded_price, order)
 
 def get_daily_changes(
         currency: str, 
@@ -234,7 +243,8 @@ def get_daily_changes(
         monitor_code: str, 
         date: str, 
         format_date: str,
-        rounded_price: bool) -> Union[Dict[str, Any], Dict[str, str]]:
+        rounded_price: bool,
+        order: str) -> Union[Dict[str, Any], Dict[str, str]]:
     """
     Obtiene los cambios diarios de un monitor.
 
@@ -243,7 +253,7 @@ def get_daily_changes(
     - monitor_code: Key del monitor.
     - date: Fecha.
     """
-    return get_monitor_data(currency, page, monitor_code, date, date, 'daily', format_date, rounded_price)
+    return get_monitor_data(currency, page, monitor_code, date, date, 'daily', format_date, rounded_price, order)
 
 def get_price_converted(currency: str, type: str, value: Union[int, float], page: str, monitor_code: str) -> Union[float, Dict[str, str]]:
     """
