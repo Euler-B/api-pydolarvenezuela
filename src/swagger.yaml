@@ -140,6 +140,18 @@ paths:
           description: El monitor específico del que se quiere obtener la información.
           schema:
             type: string
+        - name: start_date
+          in: query
+          required: true
+          description: Fecha de inicio del historial.
+          schema:
+            type: string
+        - name: end_date
+          in: query
+          required: true
+          description: Fecha de fin del historial.
+          schema:
+            type: string
         - name: format_date
           in: query
           required: false
@@ -154,18 +166,13 @@ paths:
           schema:
             type: boolean
             default: true
-        - name: start_date
+        - name: order
           in: query
-          required: true
-          description: Fecha de inicio del historial.
+          required: false
+          description: Ordenar el historial de precios. (`asc`, `desc`).
           schema:
             type: string
-        - name: end_date
-          in: query
-          required: true
-          description: Fecha de fin del historial.
-          schema:
-            type: string
+            default: desc
       security:
         - BearerAuth: []
       responses:
@@ -203,6 +210,12 @@ paths:
           description: El monitor específico del que se quiere obtener la información.
           schema:
             type: string
+        - name: date
+          in: query
+          required: true
+          description: Fecha de inicio del historial.
+          schema:
+            type: string
         - name: format_date
           in: query
           required: false
@@ -217,12 +230,13 @@ paths:
           schema:
             type: boolean
             default: true
-        - name: date
+        - name: order
           in: query
-          required: true
-          description: Fecha de inicio del historial.
+          required: false
+          description: Ordenar el historial de precios. (`asc`, `desc`).
           schema:
             type: string
+            default: desc
       security:
         - BearerAuth: []
       responses:

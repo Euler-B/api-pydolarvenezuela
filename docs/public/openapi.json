@@ -224,6 +224,24 @@
             }
           },
           {
+            "name": "start_date",
+            "in": "query",
+            "required": true,
+            "description": "Fecha de inicio del historial.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": true,
+            "description": "Fecha de fin del historial.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "format_date",
             "in": "query",
             "required": false,
@@ -246,21 +264,14 @@
             }
           },
           {
-            "name": "start_date",
+            "name": "order",
             "in": "query",
-            "required": true,
-            "description": "Fecha de inicio del historial.",
+            "required": false,
+            "description": "Ordenar el historial. (`asc`, `desc`).",
             "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "end_date",
-            "in": "query",
-            "required": true,
-            "description": "Fecha de fin del historial.",
-            "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "desc",
+              "enum": ["asc", "desc"]
             }
           }
         ],
@@ -327,6 +338,15 @@
             }
           },
           {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "description": "Fecha de inicio del historial.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "format_date",
             "in": "query",
             "required": false,
@@ -349,12 +369,14 @@
             }
           },
           {
-            "name": "date",
+            "name": "order",
             "in": "query",
-            "required": true,
-            "description": "Fecha de inicio del historial.",
+            "required": false,
+            "description": "Ordenar el historial. (`asc`, `desc`).",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "desc",
+              "enum": ["asc", "desc"]
             }
           }
         ],
