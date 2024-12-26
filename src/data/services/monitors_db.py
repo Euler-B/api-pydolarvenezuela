@@ -144,7 +144,7 @@ def add_history_price(session: Session, monitor_id: int, price: float, last_upda
     session.add(MonitorPriceHistory(monitor_id=monitor_id, price=price, last_update=last_update))
     session.commit()
 
-def get_range_history_prices(session: Session, page_id: int, currency_id: int, monitor_name: str, start_date: datetime, end_date: datetime) -> list:
+def get_range_history_prices(session: Session, page_id: int, currency_id: int, monitor_name: str, start_date: datetime, end_date: datetime, order: str) -> list:
     monitor = session.query(Monitor).filter(
         Monitor.page_id == page_id, 
         Monitor.currency_id == currency_id, 
@@ -158,9 +158,14 @@ def get_range_history_prices(session: Session, page_id: int, currency_id: int, m
         MonitorPriceHistory.monitor_id == monitor.id,
         func.date(MonitorPriceHistory.last_update) >= start_date,
         func.date(MonitorPriceHistory.last_update) <= end_date
-    ).order_by(MonitorPriceHistory.last_update.desc()).all() # Order by last_update desc
+    )
 
-    for price_history in query:
+    if order == 'asc':
+        query = query.order_by(MonitorPriceHistory.last_update.asc())
+    else:
+        query = query.order_by(MonitorPriceHistory.last_update.desc())
+
+    for price_history in query.all():
         date_key = price_history.last_update.date()
         
         if date_key not in changes:
@@ -178,7 +183,7 @@ def get_range_history_prices(session: Session, page_id: int, currency_id: int, m
     
     return [{**value} for value in changes.values()]
 
-def get_daily_changes(session: Session, page_id: int, currency_id: int, monitor_name: str, date: datetime) -> list:
+def get_daily_changes(session: Session, page_id: int, currency_id: int, monitor_name: str, date: datetime, order: str) -> list:
     monitor = session.query(Monitor).filter(
         Monitor.page_id == page_id, 
         Monitor.currency_id == currency_id, 
@@ -190,6 +195,11 @@ def get_daily_changes(session: Session, page_id: int, currency_id: int, monitor_
     results = session.query(MonitorPriceHistory).filter(
         MonitorPriceHistory.monitor_id == monitor.id,
         func.date(MonitorPriceHistory.last_update) == date,
-    ).all()
+    )
 
-    return [result.__dict__ for result in results]
+    if order == 'asc':
+        results = results.order_by(MonitorPriceHistory.last_update.asc())
+    else:
+        results = results.order_by(MonitorPriceHistory.last_update.desc())
+
+    return [result.__dict__ for result in results.all()]

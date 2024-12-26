@@ -72,6 +72,7 @@ Header:
 | end_date   | `string` | Fecha de fin del historial. `DD-MM-YYYY` |
 | format_date    | `string` | _Opcional._ Indica el tipo de formato de fecha. (`iso`, `timestamp`, `default`) |
 | rounded_price    | `boolean` | _Opcional._ Indica si deseas obtener el precio redondeado. |
+| order    | `string` | _Opcional._ Indica el orden de los cambios. (`asc`, `desc`) |
 
 ### `GET /api/v1/<currency>/changes`
 
@@ -90,6 +91,7 @@ Header:
 | date    | `string` | Fecha de la cual se desea obtener los precios. `DD-MM-YYYY` |
 | format_date    | `string` | _Opcional._ Indica el tipo de formato de fecha. (`iso`, `timestamp`, `default`) |
 | rounded_price    | `boolean` | _Opcional._ Indica si deseas obtener el precio redondeado. |
+| order    | `string` | _Opcional._ Indica el orden de los cambios. (`asc`, `desc`) |
 
 ### `GET /api/v1/<currency>/conversion`
 
