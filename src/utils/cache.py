@@ -33,7 +33,7 @@ class CacheHistoryMonitor(Cache):
         super().__init__('history:monitor:' + ':'.join(map(str, args)), ex=1800)
     
     def set(self, value: Any) -> None:
-        super().set(json.dumps(value))
+        super().set(json.dumps(value, default=str))
 
     def get(self) -> Any:
         return json.loads(super().get()) if super().get() else None
