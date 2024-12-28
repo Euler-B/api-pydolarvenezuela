@@ -82,11 +82,10 @@ def get_all_monitors(
     _check_currency_provider(provider, currency)
     
     cache = CacheProvider(provider, CURRENCIES.get(currency))
-    monitors = json.loads(cache.get()) if cache.get() else None
     monitors_dict = None
     
-    if monitors is not None:
-        monitors_serialized = MonitorSchema(custom_format=format_date, rounded_price=rounded_price, many=True).dump(monitors)
+    if cache.get() is not None:
+        monitors_serialized = MonitorSchema(custom_format=format_date, rounded_price=rounded_price, many=True).dump(cache.get())
         monitors_dict = {data.pop('key'): data for data in monitors_serialized if data.get('key')}
     
     result = {
@@ -106,11 +105,10 @@ def get_accurate_monitors(monitor_code: Optional[str], format_date: str, rounded
     monitor_data = {}
     for key in default_monitors:
         cache = CacheProvider(*key)
-        data = json.loads(cache.get()) if cache.get() else None
         
-        if data is None:
+        if cache.get() is None:
             continue
-        monitors_serialized = MonitorSchema(custom_format=format_date, rounded_price=rounded_price, many=True).dump(data)
+        monitors_serialized = MonitorSchema(custom_format=format_date, rounded_price=rounded_price, many=True).dump(cache.get())
         monitors_dict = {data.pop('key'): data for data in monitors_serialized if data.get('key')}
 
         if 'usd' in monitors_dict:
@@ -204,13 +202,12 @@ def get_monitor_data(
             if not results:
                 raise ValueError('No se encontraron datos para el monitor solicitado.')
             
-            cache.set(json.dumps(results, default=str))
+            cache.set(results)
     
-    data = json.loads(cache.get())
     if data_type == 'daily':
-        schema = DailyChangeSchema(custom_format=format_date, rounded_price=rounded_price, many=True).dump(data)
+        schema = DailyChangeSchema(custom_format=format_date, rounded_price=rounded_price, many=True).dump(cache.get())
     else:
-        schema = HistoryPriceSchema(custom_format=format_date, rounded_price=rounded_price, many=True).dump(data)
+        schema = HistoryPriceSchema(custom_format=format_date, rounded_price=rounded_price, many=True).dump(cache.get())
     results = {
         'datetime': getdate(),
         data_type: schema
