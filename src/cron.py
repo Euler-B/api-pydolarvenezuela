@@ -39,8 +39,7 @@ def update_data(name: str, monitor: PageData) -> None:
     """
     try:
         provider = Provider(monitor.page, monitor.kwargs['currency'], monitor.get_values())
-        CacheProvider(name, monitor.kwargs['currency']).set(json.dumps(
-            [m.__dict__ for m in provider.get_list_monitors()], default=str))
+        CacheProvider(name, monitor.kwargs['currency']).set([m.__dict__ for m in provider.get_list_monitors()])
     except Exception as e:
         logger.warning(f'Error al obtener datos de {monitor.page.name}: {str(e)}')
 
