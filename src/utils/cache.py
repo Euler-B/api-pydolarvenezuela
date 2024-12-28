@@ -21,10 +21,22 @@ class Cache:
 class CacheProvider(Cache):
     def __init__(self, *args) -> None:
         super().__init__('provider:' + ':'.join(args))
+    
+    def set(self, value: Any) -> None:
+        super().set(json.dumps(value))
+
+    def get(self) -> Any:
+        return json.loads(super().get()) if super().get() else None
 
 class CacheHistoryMonitor(Cache):
     def __init__(self, *args) -> None:
         super().__init__('history:monitor:' + ':'.join(map(str, args)), ex=1800)
+    
+    def set(self, value: Any) -> None:
+        super().set(json.dumps(value))
+
+    def get(self) -> Any:
+        return json.loads(super().get()) if super().get() else None
 
 class CacheWebhookMonitor(Cache):
     def __init__(self, *args) -> None:
