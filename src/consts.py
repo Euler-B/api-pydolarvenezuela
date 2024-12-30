@@ -90,6 +90,11 @@ UPDATE_SCHEDULE = {
     }
 }
 
+CURRENCY_ROUTES = {
+    'dollar': ['/api/v1/dollar', '/api/v1/dollar/history', '/api/v1/dollar/changes', '/api/v1/dollar/conversion'],
+    'euro': ['/api/v1/euro', '/api/v1/euro/history', '/api/v1/euro/changes', '/api/v1/euro/conversion'],
+}
+
 ALLOWED_ROUTES = [
     '', 
     'pricing', 
