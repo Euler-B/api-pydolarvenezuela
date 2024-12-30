@@ -9,6 +9,9 @@ from .consts import TOKEN_SECRET, CURRENCY_ROUTES
 from .exceptions import HTTPException, exception_map
 
 session = sessionmaker(bind=engine)()
+routes = [
+    route for currency in CURRENCY_ROUTES.values() for route in currency
+]
 
 def _get_ip():
     if request.headers.get('X-Forwarded-For'):
@@ -50,7 +53,7 @@ def token_required(f):
         if token and not is_user_valid(session, token):
             raise HTTPException(401, "Token inválido.")
         
-        if request.path in [route for currency in CURRENCY_ROUTES.values() for route in currency]:
+        if request.path in routes:
             CacheUserPetition(request.path, token.split(' ')[1]).set()
 
         return f(*args, **kwargs)
