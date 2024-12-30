@@ -1,9 +1,7 @@
-import json
 from typing import List
 from collections import defaultdict
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from ...utils.cache import CacheHistoryPetition
 from ..models import UserPetition
 from .users_db import get_user_id
 
@@ -38,9 +36,6 @@ def get_hourly_totals_24h(session: Session, token: str) -> list:
     last_24h = datetime.now() - timedelta(hours=24)
     user_id = get_user_id(session, token)
 
-    cache = CacheHistoryPetition('hourly_totals_24h', user_id)
-    if cache.get(): return cache.get()
-
     query = session.query(UserPetition).filter(UserPetition.created_at >= last_24h, UserPetition.user_id == user_id).\
         order_by(UserPetition.created_at.asc()).all()
     results = {'total': 0, 'paths': defaultdict(list)}
@@ -51,20 +46,15 @@ def get_hourly_totals_24h(session: Session, token: str) -> list:
         })
         results['total'] += hour.total_petitions
 
-    cache.set(results)
     return results
 
 def get_daily_totals_7d(session: Session, token: str) -> list:
     last_7d = datetime.now() - timedelta(days=7)
     user_id = get_user_id(session, token)
 
-    cache = CacheHistoryPetition('daily_totals_7d', user_id)
-    if cache.get(): return cache.get()
-
     query = session.query(UserPetition).filter(UserPetition.created_at >= last_7d, UserPetition.user_id == user_id).\
         order_by(UserPetition.created_at.asc()).all()
     results = _get_hourly_totals_by_day(query)
-    cache.set(results)
     
     return results
 
@@ -72,12 +62,8 @@ def get_daily_totals_30d(session: Session, token: str) -> list:
     last_30d = datetime.now() - timedelta(days=30)
     user_id = get_user_id(session, token)
 
-    cache = CacheHistoryPetition('daily_totals_30d', user_id)
-    if cache.get(): return cache.get()
-
     query = session.query(UserPetition).filter(UserPetition.created_at >= last_30d, UserPetition.user_id == user_id).\
         order_by(UserPetition.created_at.asc()).all() 
     results = _get_hourly_totals_by_day(query)
-    cache.set(results)
     
     return results
