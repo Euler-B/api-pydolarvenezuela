@@ -5,13 +5,10 @@ from .data.engine import engine
 from .data.services.users_db import is_user_valid
 from .utils.cache import CacheUserPetition
 from .core import limiter
-from .consts import TOKEN_SECRET, CURRENCY_ROUTES
+from .consts import TOKEN_SECRET
 from .exceptions import HTTPException, exception_map
 
 session = sessionmaker(bind=engine)()
-routes = [
-    route for currency in CURRENCY_ROUTES.values() for route in currency
-]
 
 def _get_ip():
     if request.headers.get('X-Forwarded-For'):
@@ -53,7 +50,7 @@ def token_required(f):
         if token and not is_user_valid(session, token):
             raise HTTPException(401, "Token inválido.")
         
-        if request.path in routes:
+        if request.path.startswith('/api/v1/'):
             CacheUserPetition(request.path, token.split(' ')[1]).set()
 
         return f(*args, **kwargs)
