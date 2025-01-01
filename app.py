@@ -33,7 +33,7 @@ if TELEGRAM_JOB:
 scheduler.start()
 
 # app
-app = Flask(__name__, template_folder='src/www/templates', static_folder='src/www/static')
+app = Flask(__name__, template_folder='src/www/dist', static_folder='src/www/dist/assets')
 CORS(app)
 limiter.init_app(app)
 swagger = Swagger(app, template_file='src/swagger.yaml')
