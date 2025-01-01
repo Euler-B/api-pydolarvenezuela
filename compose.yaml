@@ -10,8 +10,8 @@ services:
       - redis
     networks:
       - app-network
-    volumes:
-      - .:/app
+    # volumes: # Uncomment this line to use local files
+    #   - .:/app
     logging:
       driver: "json-file"
       options:

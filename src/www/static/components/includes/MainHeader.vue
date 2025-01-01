@@ -1,43 +1,22 @@
-import { getAmountStars } from '../../services/github.js';
+<script setup>
+import { getAmountStars } from '@/services/github';
+import { onMounted, ref } from 'vue';
+import Cookies from 'js-cookie';
 
-export default {
-    name: 'HeaderComponent',
-    setup() {
-        const stars = Vue.ref(0);
-        const token = Vue.ref('');
-        const menuOpen = Vue.ref(false);
-        const setStars = async () => {
-            const starsValue = await getAmountStars();
-            localStorage.setItem('stars', `${starsValue};${new Date().getTime()}`);
-            
-            return starsValue;
-        };
+const stars = ref(0);
+const token = ref(Cookies.get('token') || null); 
+const menuOpen = ref(false);
 
-        const toggleMenu = () => { menuOpen.value = !menuOpen.value; };
+onMounted(async () => {
+  stars.value = await getAmountStars();
+});
 
-        const inicialize = async () => {
-            if (localStorage.getItem('stars')) {
-                const [starsValue, date] = localStorage.getItem('stars').split(';');
-                if (new Date().getTime() - date < 86400000) {
-                    stars.value = starsValue;
-                } else {
-                    stars.value = await setStars();
-                }
-            } else {
-                stars.value = await setStars();
-            }
-
-            if (localStorage.getItem('token')) {
-                token.value = localStorage.getItem('token');
-            }
-        };
-
-        inicialize();
-
-        return { stars, menuOpen, toggleMenu, token };
-  },
-  template: `
-  <header class="bg-gray-100 font-bold p-4 shadow-lg">
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value;
+};
+</script>
+<template>
+    <header class="bg-gray-100 font-bold p-4 shadow-lg">
     <div class="max-w-4xl mx-auto flex flex-wrap justify-between items-center">
       <div class="flex w-full sm:w-auto justify-between items-center mb-2 sm:mb-0">
         <h1 class="text-2xl font-bold text-center sm:text-left">API pyDolarVenezuela</h1>
@@ -71,5 +50,4 @@ export default {
       </div>
     </div>
   </header>
-  `
-};
+</template>

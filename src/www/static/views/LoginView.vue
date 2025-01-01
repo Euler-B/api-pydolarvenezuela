@@ -1,27 +1,32 @@
-import { loginToken } from "../services/user.js";
+<script>
+import { loginToken } from '@/services/user';
+import Cookies from 'js-cookie';
+import { ref } from 'vue';
 
-export default {
-    name: 'Login',
+export default  {
     setup() {
-        const token = Vue.ref('');
-
-        return {
-            token
-        };
-    },
+        const token = ref('');
+        return { token };
+    },  
     methods: {
         async login() {
             const response = await loginToken(this.token);
             if (response.success) {
-                localStorage.setItem('token', this.token);
+                Cookies.set('token', this.token, {
+                    expires: 7, 
+                    secure: true,
+                    sameSite: 'Strict',
+                });
                 window.location.href = '/dashboard';
             } else {
                 alert('Token inválido');
             }
         }
     },
-    template: `
-  <div class="flex items-center justify-center min-h-screen bg-gray-100">
+}
+</script>
+<template>
+    <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-md">
       <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h2 class="text-center text-2xl font-bold mb-4">Login with Access Token</h2>
@@ -41,5 +46,4 @@ export default {
       </div>
     </div>
   </div>
-    `
-};
+</template>

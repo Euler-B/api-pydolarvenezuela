@@ -1,7 +1,27 @@
-import { getDaily30, getDaily7, getHourly24 } from "../services/user.js";
-
-export default {
-  name: 'Usage',
+<template>
+    <div class="p-4">
+      <h2 class="text-2xl font-bold mb-4">Estadísticas de Uso</h2>
+      <p class="text-sm text-gray-500 mb-4">Se actualiza cada hora</p>
+      <div class="mb-4">
+        <label for="chartType" class="block text-sm font-medium text-gray-700">Selecciona el tipo de gráfica:</label>
+        <select v-model="selectedChart" @change="fetchData" id="chartType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+          <option value="24h">Últimas 24 Horas</option>
+          <option value="7d">Últimos 7 Días</option>
+          <option value="30d">Últimos 30 Días</option>
+        </select>
+      </div>
+      <p class="text-lg font-medium mb-4">Total de Solicitudes: {{ formatTotal(totalRequests) }}</p>
+      <div class="relative h-96 w-full md:w-3/4 lg:w-2/3 mx-auto">
+        <canvas id="usageChart"></canvas>
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  import { getDaily30, getDaily7, getHourly24 } from "@/services/user";
+  import Chart from 'chart.js/auto';
+  
+  export default {
   data() {
     return {
       selectedChart: '24h',
@@ -132,24 +152,10 @@ export default {
   },
   mounted() {
     this.fetchData();
-  },
-  template: `
-    <div class="p-4">
-      <h2 class="text-2xl font-bold mb-4">Estadísticas de Uso</h2>
-      <p class="text-sm text-gray-500 mb-4">Se actualiza cada hora</p>
-      <div class="mb-4">
-        <label for="chartType" class="block text-sm font-medium text-gray-700">Selecciona el tipo de gráfica:</label>
-        <select v-model="selectedChart" @change="fetchData" id="chartType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-          <option value="24h">Últimas 24 Horas</option>
-          <option value="7d">Últimos 7 Días</option>
-          <option value="30d">Últimos 30 Días</option>
-        </select>
-      </div>
-      <p class="text-lg font-medium mb-4">Total de Solicitudes: {{ formatTotal(totalRequests) }}</p>
-      <div class="relative h-96 w-full md:w-3/4 lg:w-2/3 mx-auto">
-        <canvas id="usageChart"></canvas>
-      </div>
-    </div>
-  `
-};
-
+  }
+  };
+  </script>
+  
+  <style scoped>
+  /* Estilos opcionales */
+  </style>

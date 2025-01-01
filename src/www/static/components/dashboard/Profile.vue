@@ -1,38 +1,35 @@
-import { getUser, updateUser } from "../services/user.js";
+<script setup>
+import { getUser, updateUser } from '@/services/user';
+import { onMounted, ref } from 'vue';
+const profile = ref({});
+const newName = ref("");
 
-export default {
-  name: 'Profile',
-  setup() {
-    const profile = Vue.ref({});
-    const newName = Vue.ref("");
+const formatDate = (dateString) => { 
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString('es-ES', options); 
+}
 
-    function formatDate(dateString) { 
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-        return new Date(dateString).toLocaleDateString('es-ES', options); 
+const getProfile = async () => {
+    profile.value = await getUser();
+}
+
+const saveName = async () => {
+    if (newName.value.trim() !== "") {
+    profile.value.name = newName.value;
+    await updateUser(newName.value);
+    newName.value = ""; 
+    alert("Nombre actualizado exitosamente");
+    } else {
+    alert("El nombre no puede estar vacío");
     }
+}
 
-    async function getProfile() {
-      profile.value = await getUser();
-    }
+onMounted(async () => {
+    await getProfile();
+});
 
-    async function saveName() {
-      if (newName.value.trim() !== "") {
-        profile.value.name = newName.value;
-        await updateUser(newName.value);
-        newName.value = ""; 
-        alert("Nombre actualizado exitosamente");
-      } else {
-        alert("El nombre no puede estar vacío");
-      }
-    }
-
-    Vue.onMounted(() => {
-      getProfile();
-    });
-
-    return { profile, newName, saveName, formatDate };
-  },
-  template: `
+</script>
+<template>
     <div class="p-4">
       <h1 class="text-2xl font-bold mb-4">Perfil</h1>
       <div v-if="Object.keys(profile).length" class="bg-white shadow-md rounded p-6 mb-6">
@@ -57,5 +54,4 @@ export default {
         <p>Cargando perfil...</p>
       </div>
     </div>
-  `
-};
+</template>

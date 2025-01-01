@@ -1,14 +1,9 @@
-import ConsoleComponent from "./Console.js";
-import SponsorComponent from "./includes/Sponsor.js";
-
-export default {
-    name: 'Home',
-    components: {
-        ConsoleComponent,
-        SponsorComponent
-    },
-    template: `
-    <SponsorComponent />
+<script setup>
+import Console from '@/components/Console.vue';
+import Sponsor from '@/components/includes/Sponsor.vue';
+</script>
+<template>
+    <Sponsor />
         <section class="bg-white text-gray-800 p-8">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl font-bold mb-4">Bienvenido a la API pyDolarVenezuela</h2>
@@ -23,8 +18,7 @@ export default {
                     Ir a la Documentación
                 </a>
             </div>
-            <ConsoleComponent />
+            <Console />
         </div>
     </section>
-    `
-};
+</template>

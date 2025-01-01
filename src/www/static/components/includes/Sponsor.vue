@@ -1,13 +1,7 @@
-import { sponsors } from '../../utils/sponsors/small/sponsors.js'
-
-export default {
-    setup() {
-        return {
-            sponsors
-        }
-    },
-    name: 'SponsorComponent',
-    template: `
+<script setup>
+import { sponsors } from '@/utils/sponsors/small/sponsors';
+</script>
+<template>
   <section class="bg-blue-600 text-white p-4">
     <div class="max-w-4xl mx-auto">
       <h1 class="text-3xl font-bold text-center">Sponsors</h1>
@@ -27,5 +21,4 @@ export default {
       </div>
     </div>
   </section>
-    `
-}
+</template>

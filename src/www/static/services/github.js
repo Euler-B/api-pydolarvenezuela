@@ -1,4 +1,4 @@
-import 'https://unpkg.com/axios@1.7.8/dist/axios.min.js'
+import axios from "axios"
 
 const URL_API = 'https://api.github.com/repos/fcoagz/api-pydolarvenezuela'
 
