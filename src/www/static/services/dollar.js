@@ -1,7 +1,7 @@
-import 'https://unpkg.com/axios@1.7.8/dist/axios.min.js'
+import axios from "axios"
 
 export async function getDollarValue() {
-    return await axios.get('/api/v1/dollar', {
+    return await axios.get('https://pydolarve.org/api/v1/dollar', {
         params: {
             page: 'bcv',
             monitor: 'usd'
