@@ -105,14 +105,33 @@ def update_monitor(session: Session, page_id: int, currency_id: int, monitor_id:
     session.commit()
     add_history_price(session, monitor_id, new_price, last_update)
 
-def modificate_monitor(session: Session, page: str, monitor: str, data: dict) -> None:
+def modificate_monitor(session: Session, page: str, currency: str, monitor_title: str, data: dict, update: bool) -> None:
+    from ...consts import PROVIDERS
+    from ...utils.cache import CacheProvider
+
     page = session.query(Page).filter(func.lower(Page.name) == func.lower(page)).first() 
     if not page:
         raise Exception("La pagina no fue encontrada.")
     
-    monitor = session.query(Monitor).filter(func.lower(Monitor.title) == func.lower(monitor), 
-                                            Monitor.page_id == page.id).update(data)
+    currency = session.query(Currency).filter(func.lower(Currency.symbol) == func.lower(currency)).first()
+    if not currency:
+        raise Exception("La moneda no fue encontrada.")
+    
+    cache = CacheProvider(PROVIDERS.get(page.name)['id'], currency.symbol)
+    monitor = session.query(Monitor).filter(func.lower(Monitor.title) == func.lower(monitor_title), 
+                                            Monitor.page_id == page.id,
+                                            Monitor.currency_id == currency.id).first()
+    
+    for key, value in data.items(): setattr(monitor, key, value)
+    
+    if not update:
+        monitor_price_history = session.query(MonitorPriceHistory).\
+            filter(MonitorPriceHistory.monitor_id == monitor.id).order_by(MonitorPriceHistory.id.desc()).first()
+        session.delete(monitor_price_history)
+
     session.commit()
+    add_history_price(session, monitor.id, data['price'], data['last_update'])
+    cache.set([m.__dict__ for m in session.query(Monitor).filter(Monitor.page_id == page.id, Monitor.currency_id == currency.id).all()])
 
 def get_monitor(session: Session, page_id: int, currency_id: int, monitor: str) -> Monitor:
     monitor = session.query(Monitor).filter(
