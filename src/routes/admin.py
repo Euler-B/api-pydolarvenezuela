@@ -82,16 +82,18 @@ def reload_monitors():
 def modificate_monitor():
     form = request.form.to_dict()
     page = form.pop('page', None)
-    monitor = form.pop('monitor', None)
+    currency = form.pop('currency', None)
+    monitor  = form.pop('monitor', None)
+    update   = form.pop('update', False)
 
-    if not all([page, monitor]):
-        raise ValueError('Falta el nombre de la página o el monitor.')
+    if not all([page, currency, monitor]):
+        raise ValueError('Falta el nombre de la página o la moneda o el monitor.')
     
     if not form:
         raise ValueError('No se proporcionaron los datos a modificar.')
 
     with Session(engine) as session:
-        _modificate_monitor_(session, page, monitor, form)
+        _modificate_monitor_(session, page, currency, monitor, form, update)
     return jsonify({"message": "Monitor modificado exitosamente."}), 200
 
 @route.delete('/delete-page')
