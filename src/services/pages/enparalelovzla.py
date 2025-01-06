@@ -21,28 +21,43 @@ class EnParaleloVzlaService(Base):
 
         for widget in widget_messages:
             message = widget.find('div', 'tgme_widget_message text_not_supported_wrap js-widget_message')
-            if message is not None:
-                data_message = message.find('div', 'tgme_widget_message_bubble')
-                text_message = data_message.find('div', 'tgme_widget_message_text js-message_text')
+            
+            if message is None:
+                continue
+            
+            data_message = message.find('div', 'tgme_widget_message_bubble')
+            text_message = data_message.find('div', 'tgme_widget_message_text js-message_text')
                 
-                if text_message is not None:
-                    result = re.findall(PATTERN, text_message.text.strip())
-                    if result and len([emoji[0] for emoji in result if emoji[0]]) == 4:
-                        value = ''.join([r[-1] for r in result if r[-1]]).replace(',', '.')
-                        price = float(value)
-                        date_message = data_message.find('div', 'tgme_widget_message_info short js-message_info').\
-                            find('time').get('datetime')
-                        last_update = get_formatted_date(date_message)
-                        image = next((image.image for image in list_monitors_images if image.provider == 'enparalelovzla' and image.title == 'enparalelovzla'), None)
+            if text_message is None:
+                continue
+            
+            result = re.findall(PATTERN, text_message.text.strip())
+            if result and cls._is_valid_message(result):   
+                price = cls._extract_price(result)
 
-                        data = {
-                            'key': 'enparalelovzla',
-                            'title': 'EnParaleloVzla',
-                            'price': price,
-                            'last_update': last_update,
-                            'image': image
-                        }
-                        last_occurrences.append(data)
-        if last_occurrences:
-            return [last_occurrences[-1]]
-        return None
+                if price is not None:
+                    last_update = get_formatted_date(cls._get_date_message(data_message))
+                    image = next((image.image for image in list_monitors_images if image.provider == 'enparalelovzla' and image.title == 'enparalelovzla'), None)
+
+                    data = {
+                        'key': 'enparalelovzla',
+                        'title': 'EnParaleloVzla',
+                        'price': price,
+                        'last_update': last_update,
+                        'image': image
+                    }
+                    last_occurrences.append(data)
+        return [last_occurrences[-1]] if last_occurrences else None
+    
+    @classmethod
+    def _is_valid_message(cls, result: list):
+        return len([emoji[0] for emoji in result if emoji[0]]) == 4
+
+    @classmethod
+    def _extract_price(cls, result: list):
+        value = ''.join([r[-1] for r in result if r[-1]]).replace(',', '.')
+        return float(value) if value else None
+    
+    @classmethod
+    def _get_date_message(cls, data_message: BeautifulSoup):
+        return data_message.find('div', 'tgme_widget_message_info short js-message_info').find('time').get('datetime')
