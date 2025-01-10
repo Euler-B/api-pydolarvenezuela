@@ -22,6 +22,6 @@ def get_url_image(provider: str, monitor: str) -> Union[str, None]:
     Obtiene la URL de la imagen del proveedor.
     """
     for obj in LIST_IMAGES_URL:
-        if obj['provider'].lower() == provider.lower() and obj['title'].lower() == monitor.lower():
+        if obj['provider'].lower() == PROVIDERS.get(provider, {}).get('id') and obj['title'].lower() == monitor.lower():
             return obj['image']
     return None
