@@ -98,7 +98,7 @@ bank_dict = {
     "Bangente": "bangente",
 }
 
-path_images = [
+LIST_IMAGES_URL = [
     {
         "provider": "bcv",
         "title": "activo",
@@ -390,4 +390,3 @@ path_images = [
         "image": "https://res.cloudinary.com/dcpyfqx87/image/upload/v1729921607/monitors/public_id:mk-frontera.webp"
     }
 ]
-list_monitors_images = [Image(**item) for item in path_images]
