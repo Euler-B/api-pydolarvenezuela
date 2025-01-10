@@ -1,7 +1,7 @@
 import json
 from ...utils.request import request
 from ...utils.time import get_formatted_timestamp
-from ...utils.extras import list_monitors_images
+from ...utils.func_consts import get_url_image
 from ..._pages import AlCambio
 from ._base import Base
 
@@ -22,7 +22,7 @@ class AlCambioService(Base):
                 name  = 'EnParaleloVzla' if not rate['official'] else 'BCV'
                 key   = name.lower()
                 date  = get_formatted_timestamp(country_conversions['dateParalelo'] if not rate['official'] else country_conversions['dateBcv'])
-                image = next((image.image for image in list_monitors_images if image.provider == 'alcambio' and image.title == key), None)
+                image = get_url_image(cls.PAGE.name, key)
                 rates.append({
                     'key': key,
                     'title': name,

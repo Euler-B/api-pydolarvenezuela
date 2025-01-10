@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from ...utils.request import request
-from ...utils.extras import list_monitors_images
+from ...utils.func_consts import get_url_image
 from ...utils.common import _convert_specific_format, _convert_dollar_name_to_monitor_name
 from ...utils.time import standard_time_zone
 from ..._pages import DolarToday
@@ -21,7 +21,7 @@ class DolarTodayService(Base):
         for key, value in response.items():
             title = _convert_dollar_name_to_monitor_name(key)
             key = _convert_specific_format(title)
-            image = next((image.image for image in list_monitors_images if image.provider == 'dolartoday' and image.title == key), None)
+            image = get_url_image(cls.PAGE.name, key)
             price = float(str(value).replace('Bs.', '').strip())   
             last_update = datetime.now(standard_time_zone)
 

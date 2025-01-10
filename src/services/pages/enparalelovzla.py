@@ -1,7 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 from ...utils.request import request
-from ...utils.extras import list_monitors_images
+from ...utils.func_consts import get_url_image
 from ...utils.time import get_formatted_date
 from ..._pages import EnParaleloVzla
 from ._base import Base
@@ -37,7 +37,7 @@ class EnParaleloVzlaService(Base):
 
                 if price is not None:
                     last_update = get_formatted_date(cls._get_date_message(data_message))
-                    image = next((image.image for image in list_monitors_images if image.provider == 'enparalelovzla' and image.title == 'enparalelovzla'), None)
+                    image = get_url_image(cls.PAGE.name, 'enparalelovzla')
 
                     data = {
                         'key': 'enparalelovzla',

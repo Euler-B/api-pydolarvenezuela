@@ -2,7 +2,7 @@ import json
 from ...utils.request import request
 from ...utils.time import get_formatted_date_tz
 from ...utils.common import _convert_specific_format, _convert_dollar_name_to_monitor_name
-from ...utils.extras import list_monitors_images
+from ...utils.func_consts import get_url_image
 from ..._pages import CriptoDolar
 from ._base import Base
 
@@ -17,9 +17,8 @@ class CriptoDolarService(Base):
 
         for monitor in response:
             if monitor['type'] in ['bolivar', 'bancove']:
-                image = next((image.image for image in list_monitors_images if image.provider == 'criptodolar' and image.title == _convert_specific_format(
-                        _convert_dollar_name_to_monitor_name(monitor['name']))), None)
                 key = _convert_specific_format(_convert_dollar_name_to_monitor_name(monitor['name']))
+                image = get_url_image(cls.PAGE.name, key)
                 title = _convert_dollar_name_to_monitor_name(monitor['name'])
                 price = round(monitor['price'], 2)
                 last_update = get_formatted_date_tz(monitor['updatedAt'])

@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
 from ...utils.request import request
-from ...utils.extras import currencies, list_monitors_images, bank_dict
+from ...utils.extras import currencies, bank_dict
 from ...utils.time import get_formatted_date_bcv, get_datestring_to_datetime
+from ...utils.func_consts import get_url_image
 from ..._pages import BCV
 from ._base import Base
 
@@ -32,7 +33,7 @@ class BCVService(Base):
                 field_tasa_venta = bank.find('td', 'views-field views-field-field-tasa-venta').text
                 if field_tasa_venta.count(',') == 1:
                     price = float(field_tasa_venta.replace(',', '.'))
-                    image = next((image.image for image in list_monitors_images if image.provider == 'bcv' and image.title == key), None)
+                    image = get_url_image(cls.PAGE.name, key)
                     last_update = get_datestring_to_datetime(bank.find('td', 'views-field views-field-field-fecha-del-indicador').text.strip().replace('-', '/'))
 
                     rates.append({
@@ -44,7 +45,7 @@ class BCVService(Base):
                     })
 
         for code, values in currencies.items():
-            image = next((image.image for image in list_monitors_images if image.provider == 'bcv' and image.title == code), None)
+            image = get_url_image(cls.PAGE.name, code)
             rates.append({
                 'key': code,
                 'title': values['name'],
